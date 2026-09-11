@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Elite — Protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0C;
+    --bg-elevated:#151412;
+    --text:#ECE7DD;
+    --text-dim:#8C877D;
+    --accent:#B8934F;
+    --accent-dim:#7A6740;
+    --line:#3A3733;
+    --serif:'Fraunces', serif;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* NAV */
+  nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:28px 0;
+  }
+  .brand{
+    font-family:var(--serif);
+    font-size:1.15rem;
+    font-weight:500;
+    letter-spacing:0.01em;
+  }
+  .brand span{color:var(--accent);}
+  nav a{
+    color:var(--text-dim);
+    text-decoration:none;
+    font-size:0.9rem;
+  }
+
+  /* HERO */
+  .hero{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:64px;
+    align-items:center;
+    padding:64px 0 96px;
+    min-height:72vh;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(2.4rem, 4.2vw, 3.6rem);
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  .hero p.lede{
+    margin-top:24px;
+    font-size:1.08rem;
+    color:var(--text-dim);
+    max-width:42ch;
+    line-height:1.65;
+  }
+  .cta-row{
+    margin-top:40px;
+    display:flex;
+    align-items:center;
+    gap:24px;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#161310;
+    border:none;
+    padding:14px 28px;
+    font-family:var(--sans);
+    font-size:0.95rem;
+    font-weight:600;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .link-secondary{
+    color:var(--text);
+    font-size:0.92rem;
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:2px;
+  }
+
+  /* CALIBRATION DIAL */
+  .dial-stage{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .dial-caption{
+    position:absolute;
+    bottom:-6px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:clamp(0.68rem, 2.3vw, 0.78rem);
+    color:var(--text-dim);
+    letter-spacing:0.02em;
+    text-align:center;
+    width:80%;
+    white-space:normal;
+    line-height:1.3;
+  }
+  .dial-stage svg{
+    width:100%;
+    max-width:300px;
+    height:auto;
+  }
+  #needle{
+    transform-origin:150px 150px;
+    transform:rotate(-130deg);
+    transition:transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .dial-ready #needle{
+    transform:rotate(42deg);
+  }
+  .tick{ stroke:var(--line); }
+  .tick.major{ stroke:var(--text-dim); }
+
+  /* SECTION: POSITIONING */
+  .section{
+    padding:110px 0;
+    border-top:1px solid var(--line);
+  }
+  .section-grid{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:72px;
+    align-items:start;
+  }
+  .section h2{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(1.8rem, 2.6vw, 2.3rem);
+    line-height:1.15;
+    max-width:14ch;
+  }
+  .section h2 .lead-word{
+    display:block;
+    font-size:1.6em;
+    font-weight:600;
+  }
+  .section h2 .rest-words{
+    display:block;
+    color:var(--text-dim);
+    font-size:0.62em;
+    font-weight:400;
+    margin-top:2px;
+  }
+  .section .body-text{
+    margin-top:20px;
+    color:var(--text-dim);
+    font-size:1.02rem;
+    line-height:1.7;
+    max-width:46ch;
+  }
+
+  /* EXAM CARD */
+  .exam-card{
+    background:var(--bg-elevated);
+    border:1px solid var(--line);
+    padding:36px;
+    border-radius:3px;
+    max-width:480px;
+  }
+  .exam-card .q-label{
+    color:var(--text-dim);
+    font-size:0.85rem;
+    margin-bottom:14px;
+  }
+  .exam-card .q-text{
+    font-size:1.02rem;
+    line-height:1.6;
+    margin-bottom:24px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 4px;
+    border-top:1px solid var(--line);
+    font-size:0.95rem;
+    color:var(--text-dim);
+    cursor:pointer;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  .option:last-child{border-bottom:1px solid var(--line);}
+  .option:hover{ background:rgba(255,255,255,0.02); }
+  .exam-card.answered .option{ cursor:default; }
+  .exam-card.answered .option:hover{ background:none; }
+
+  .option .marker{
+    width:20px;
+    height:20px;
+    border:1px solid var(--line);
+    border-radius:50%;
+    flex-shrink:0;
+    position:relative;
+    transition:border-color 0.3s ease;
+  }
+  .option .marker::after{
+    content:'';
+    position:absolute;
+    top:50%; left:50%;
+    width:9px; height:9px;
+    border-radius:50%;
+    transform:translate(-50%,-50%) scale(0);
+    transition:transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* revealed correct answer, whether or not it was the one clicked */
+  .exam-card.answered .option.is-correct{ color:var(--text); }
+  .exam-card.answered .option.is-correct .marker{ border-color:var(--accent); }
+  .exam-card.answered .option.is-correct .marker::after{
+    background:var(--accent);
+    transform:translate(-50%,-50%) scale(1);
+  }
+
+  /* the option the user picked, if it was wrong */
+  .exam-card.answered .option.is-wrong-pick{ color:var(--text-dim); }
+  .exam-card.answered .option.is-wrong-pick .marker{ border-color:#8B5A4A; }
+  .exam-card.answered .option.is-wrong-pick .marker::after{
+    background:#8B5A4A;
+    transform:translate(-50%,-50%) scale(1);
+  }
+
+  .feedback-tag{
+    margin-top:18px;
+    font-size:0.85rem;
+    color:var(--text-dim);
+    opacity:0;
+    transform:translateY(-4px);
+    transition:opacity 0.4s ease, transform 0.4s ease;
+  }
+  .exam-card.answered .feedback-tag{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .feedback-tag .tag-correct{ color:var(--accent); }
+  .feedback-tag .tag-wrong{ color:#B07A66; }
+
+  /* PROVA SOCIAL */
+  .proof-grid{
+    margin-top:44px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+  }
+  .proof-card{
+    border:1px solid var(--line);
+    border-radius:3px;
+    overflow:hidden;
+    background:var(--bg-elevated);
+  }
+  .proof-card img{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .proof-card .proof-cap{
+    padding:12px 16px;
+    font-size:0.78rem;
+    color:var(--text-dim);
+    border-top:1px solid var(--line);
+  }
+
+  /* OBJEÇÕES */
+  .objection-list{
+    margin-top:32px;
+    max-width:640px;
+  }
+  .objection{
+    padding:22px 0;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 1.4fr;
+    gap:24px;
+  }
+  .objection:last-child{ border-bottom:1px solid var(--line); }
+  .objection .q{ font-size:0.98rem; }
+  .objection .a{ color:var(--text-dim); font-size:0.95rem; line-height:1.65; }
+
+  /* FAQ */
+  .faq-list{ margin-top:32px; max-width:640px; }
+  .faq-item{
+    border-top:1px solid var(--line);
+    padding:6px 0;
+  }
+  .faq-item:last-child{ border-bottom:1px solid var(--line); }
+  .faq-item summary{
+    cursor:pointer;
+    padding:16px 4px;
+    font-size:0.98rem;
+    list-style:none;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{
+    content:'+';
+    color:var(--accent);
+    font-size:1.2rem;
+    margin-left:16px;
+  }
+  .faq-item[open] summary::after{ content:'–'; }
+  .faq-item .a{
+    color:var(--text-dim);
+    font-size:0.94rem;
+    line-height:1.65;
+    padding:0 4px 20px;
+    max-width:56ch;
+  }
+
+  /* CTA FINAL */
+  .cta-final{
+    padding:100px 0 120px;
+    border-top:1px solid var(--line);
+  }
+  .cta-final h2{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(1.9rem, 3.4vw, 2.6rem);
+    max-width:16ch;
+    line-height:1.2;
+  }
+  .cta-final .cta-row{ margin-top:32px; }
+
+  /* FOOTER */
+  footer{
+    padding:36px 0;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:var(--text-dim);
+    font-size:0.82rem;
+  }
+  footer a{ color:var(--text-dim); text-decoration:none; margin-left:20px; }
+
+  @media (max-width: 920px){
+    .proof-grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+
+  @media (max-width: 860px){
+    .hero, .section-grid{ grid-template-columns:1fr; }
+    .hero{ padding:40px 0 64px; }
+    .dial-stage{ order:-1; margin-bottom:24px; }
+    .proof-grid{ grid-template-columns:1fr; }
+    .objection{ grid-template-columns:1fr; gap:8px; }
+    footer{ flex-direction:column; gap:12px; align-items:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #needle{ transition:none; }
+    .exam-card .marker::after{ transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="brand">Simulador <span>Elite</span></div>
+    <a href="#objetivas">Objetivas</a>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <h1>Simulados calibrados para o edital, não para média geral.</h1>
+      <p class="lede">Um simulador de objetivas construído a partir do padrão real de cobrança da banca — não de um banco genérico de questões recicladas.</p>
+      <div class="cta-row">
+        <button class="btn-primary">Conhecer o simulador</button>
+        <a href="#objetivas" class="link-secondary">Ver como funciona</a>
+      </div>
+    </div>
+
+    <div class="dial-stage" id="dialStage">
+      <svg width="300" height="220" viewBox="0 0 300 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- tick marks -->
+        <g id="ticks"></g>
+        <circle cx="150" cy="150" r="4" fill="var(--accent)"/>
+        <line id="needle" x1="150" y1="150" x2="150" y2="60" stroke="var(--accent)" stroke-width="2"/>
+      </svg>
+      <div class="dial-caption">calibrado ao padrão da banca</div>
+    </div>
+  </section>
+
+  <section class="section" id="objetivas">
+    <div class="section-grid">
+      <div>
+        <h2><span class="lead-word">Precisão,</span><span class="rest-words">não volume.</span></h2>
+        <p class="body-text">São 12 simulados objetivos por edital — não um banco infinito de questões genéricas. Cada questão é escrita para reproduzir o estilo de cobrança da banca escolhida: a mesma lógica de armadilha, a mesma estrutura de enunciado. Você não treina "concurso em geral". Você treina a prova que vai fazer.</p>
+      </div>
+
+      <div class="exam-card" id="examCard">
+        <div class="q-label">Questão 14 — Direito Administrativo</div>
+        <p class="q-text">A respeito do princípio da autotutela, é correto afirmar que a Administração pode:</p>
+        <div class="option" data-correct="false">
+          <div class="marker"></div>
+          Revisar seus próprios atos apenas mediante provocação do interessado
+        </div>
+        <div class="option" data-correct="true">
+          <div class="marker"></div>
+          Anular atos ilegais e revogar atos inconvenientes, de ofício ou por provocação
+        </div>
+        <div class="option" data-correct="false">
+          <div class="marker"></div>
+          Delegar exclusivamente ao Judiciário o controle de seus próprios atos
+        </div>
+        <div class="feedback-tag" id="feedbackTag"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="prova">
+    <div>
+      <h2><span class="lead-word">Sem holofote,</span><span class="rest-words">com resultado.</span></h2>
+      <p class="body-text">Nada de "+10 mil aprovados" solto num banner. Aqui entram conversas reais de quem usou o simulador — print como print, sem edição de discurso.</p>
+    </div>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <img src="assets/depoimento-3.png" alt="Depoimento de aluno sobre os simulados">
+      </div>
+      <div class="proof-card">
+        <img src="assets/depoimento-2.jpeg" alt="Depoimento de aluno aprovado em concurso de prefeitura">
+      </div>
+      <div class="proof-card">
+        <img src="assets/depoimento-1.jpeg" alt="Depoimento de aluno sobre confiança na prova">
+      </div>
+      <div class="proof-card">
+        <img src="assets/app-resultado.png" alt="Print de resultado real dentro do simulador">
+        <div class="proof-cap">Resultado real de um simulado respondido na plataforma</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="objecoes">
+    <h2><span class="lead-word">Antes de</span><span class="rest-words">decidir.</span></h2>
+    <div class="objection-list">
+      <div class="objection">
+        <div class="q">Funciona no celular?</div>
+        <div class="a">Sim. O simulador roda direto do navegador — não precisa instalar nada.</div>
+      </div>
+      <div class="objection">
+        <div class="q">Por quanto tempo tenho acesso?</div>
+        <div class="a">Seu acesso vale enquanto o edital do seu cargo estiver vigente. Quando sair um edital novo — seja uma reabertura do mesmo cargo ou outro órgão (ex: você comprou para PRF e depois quer se preparar para PF), você renova com 35% de desconto em vez de pagar o valor cheio de novo.</div>
+      </div>
+      <div class="objection">
+        <div class="q">E se eu não me adaptar ao formato?</div>
+        <div class="a">Você tem 14 dias de garantia para pedir reembolso — o dobro do prazo previsto por lei. Tempo de sobra pra testar a plataforma de verdade.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <h2><span class="lead-word">Perguntas</span><span class="rest-words">antes de começar.</span></h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Preciso ter estudado toda a teoria antes de começar?</summary>
+        <div class="a">Não. O simulador foi pensado pra quem já estuda e quer testar a aplicação real do conteúdo, no formato que a banca cobra.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Cada questão vem com explicação?</summary>
+        <div class="a">Sim — como você viu na demonstração acima, cada resposta traz o porquê, na hora.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Funciona em computador e celular?</summary>
+        <div class="a">Sim, o simulador é responsivo e roda em qualquer um dos dois sem diferença de experiência.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Os simulados seguem alguma banca específica?</summary>
+        <div class="a">As principais são CESPE/Cebraspe, FGV, FCC e IDECAN — mas o formato é 100% adaptável para outras bancas também.</div>
+      </details>
+    </div>
+  </section>
+
+  <section class="cta-final">
+    <h2>Pronto para testar contra a banca de verdade?</h2>
+    <div class="cta-row">
+      <button class="btn-primary">Conhecer o simulador</button>
+    </div>
+  </section>
+
+  <footer>
+    <div>© Simulador Elite</div>
+    <div>
+      <a href="#">Termos</a>
+      <a href="#">Privacidade</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // build tick marks
+  const ticksGroup = document.getElementById('ticks');
+  const cx = 150, cy = 150, rOuter = 95, rInnerMajor = 78, rInnerMinor = 86;
+  const startAngle = -220, endAngle = 40; // degrees, sweep range
+  const totalTicks = 24;
+  for(let i=0; i<=totalTicks; i++){
+    const angle = startAngle + (endAngle - startAngle) * (i/totalTicks);
+    const rad = angle * Math.PI/180;
+    const isMajor = i % 4 === 0;
+    const rIn = isMajor ? rInnerMajor : rInnerMinor;
+    const x1 = cx + rOuter*Math.cos(rad);
+    const y1 = cy + rOuter*Math.sin(rad);
+    const x2 = cx + rIn*Math.cos(rad);
+    const y2 = cy + rIn*Math.sin(rad);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('class', isMajor ? 'tick major' : 'tick');
+    line.setAttribute('stroke-width', isMajor ? '2' : '1');
+    ticksGroup.appendChild(line);
+  }
+
+  // hero load sequence: calibrate needle once
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        document.getElementById('dialStage').classList.add('dial-ready');
+      }, 300);
+    });
+  });
+
+  // exam card: user selects an option, then the answer is revealed
+  const examCard = document.getElementById('examCard');
+  const feedbackTag = document.getElementById('feedbackTag');
+  const options = examCard.querySelectorAll('.option');
+
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      if(examCard.classList.contains('answered')) return;
+
+      const pickedCorrect = opt.getAttribute('data-correct') === 'true';
+
+      options.forEach(o => {
+        if(o.getAttribute('data-correct') === 'true'){
+          o.classList.add('is-correct');
+        } else if(o === opt){
+          o.classList.add('is-wrong-pick');
+        }
+      });
+
+      feedbackTag.innerHTML = pickedCorrect
+        ? '<span class="tag-correct">Muito bem.</span> A autotutela autoriza a Administração a rever seus próprios atos de ofício — anulando o que for ilegal e revogando o que deixou de ser conveniente, sem depender de provocação nem de decisão judicial.'
+        : '<span class="tag-wrong">Não é essa.</span> A autotutela autoriza a Administração a rever seus próprios atos de ofício — anulando o que for ilegal e revogando o que deixou de ser conveniente, sem depender de provocação nem de decisão judicial.';
+
+      examCard.classList.add('answered');
+    });
+  });
+</script>
+
+</body>
+</html>
