@@ -94,6 +94,8 @@
     font-weight:600;
     cursor:pointer;
     border-radius:2px;
+    display:inline-block;
+    text-decoration:none;
   }
   .link-secondary{
     color:var(--text);
@@ -393,7 +395,7 @@
       <h1>Simulados calibrados para o edital, não para média geral.</h1>
       <p class="lede">Um simulador de objetivas construído a partir do padrão real de cobrança da banca — não de um banco genérico de questões recicladas.</p>
       <div class="cta-row">
-        <button class="btn-primary">Conhecer o simulador</button>
+        <a onclick="return false;" href="https://pay.hotmart.com/Q106592239T?checkoutMode=2&off=rkiofuef" class="btn-primary hotmart-fb hotmart__button-checkout">Comprar agora</a>
         <a href="#objetivas" class="link-secondary">Ver como funciona</a>
       </div>
     </div>
@@ -501,7 +503,7 @@
   <section class="cta-final">
     <h2>Pronto para testar contra a banca de verdade?</h2>
     <div class="cta-row">
-      <button class="btn-primary">Conhecer o simulador</button>
+      <a onclick="return false;" href="https://pay.hotmart.com/Q106592239T?checkoutMode=2&off=rkiofuef" class="btn-primary hotmart-fb hotmart__button-checkout">Comprar agora</a>
     </div>
   </section>
 
@@ -513,6 +515,20 @@
     </div>
   </footer>
 </div>
+
+<script type="text/javascript">
+  function importHotmart(){
+    var imported = document.createElement('script');
+    imported.src = 'https://static.hotmart.com/checkout/widget.min.js';
+    document.head.appendChild(imported);
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'https://static.hotmart.com/css/hotmart-fb.min.css';
+    document.head.appendChild(link);
+  }
+  importHotmart();
+</script>
 
 <script>
   // build tick marks
