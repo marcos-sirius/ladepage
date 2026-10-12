@@ -14,6 +14,7 @@ Landing de vendas da ConcursoPro, plataforma que vende simulados de concurso pú
 
 - Hospedagem: Static Site no Render, no mesmo projeto do backend. Deploy a cada push na `main`.
 - Domínio: `concursoproelite.com.br`. A landing fica no domínio puro e no `www`, o app em `app.` e o backend continua no `concursoelite.onrender.com`.
+- E-mail de contato com o aluno: `contato@concursoproelite.com.br`. Recebimento: o ImprovMX redireciona para o Gmail. Resposta: sai pelo SMTP do Brevo. Use este endereço em textos que pedem para o aluno escrever.
 - As metatags `og:url`, `og:image` e `twitter:image` usam `https://www.concursoproelite.com.br/`. Não volte a usar endereços antigos (`concursopro-simulados.onrender.com` ou Netlify).
 - Se a landing chamar a API, a origem dela precisa estar em `CORS_ALLOWED_ORIGINS` no backend (variável do Render).
 - Git guardrails: o hook `.claude/hooks/block-dangerous-git.sh` bloqueia `git push`, `reset --hard`, `clean -f`, `branch -D`, `checkout .` e `restore .`. O push é sempre feito pelo usuário.
