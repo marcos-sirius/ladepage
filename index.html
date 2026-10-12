@@ -352,6 +352,18 @@
   .ck-opt-meta{ margin-left:auto; color:var(--text-dim); font-size:0.84rem; }
   .ck-status{ margin-top:12px; color:var(--text-dim); font-size:0.88rem; line-height:1.6; }
   .ck-status:empty{ display:none; }
+  /* Carregando a lista: spinner no texto e linhas "fantasma" no lugar dos concursos */
+  .ck-status.carregando{ display:flex; align-items:center; gap:10px; }
+  .ck-status.carregando::before{
+    content:''; width:14px; height:14px; flex-shrink:0; border-radius:50%;
+    border:2px solid var(--line); border-top-color:var(--accent); animation:ck-spin 0.9s linear infinite;
+  }
+  .ck-skel{ display:flex; align-items:center; gap:14px; padding:14px 4px; border-top:1px solid var(--line); }
+  .ck-skel::before{ content:''; width:20px; height:20px; flex-shrink:0; border-radius:50%; border:1px solid var(--line); }
+  .ck-skel span{ height:12px; flex:1; max-width:68%; border-radius:2px; background:var(--line); opacity:0.6; animation:ck-pulso 1.4s ease-in-out infinite; }
+  .ck-skel:nth-child(2) span{ max-width:52%; }
+  .ck-skel:nth-child(3) span{ max-width:60%; }
+  @keyframes ck-pulso{ 50%{ opacity:0.25; } }
   .ck-novo{ margin-top:18px; padding:18px 18px 4px; border:1px solid var(--accent); border-radius:3px; }
   .ck-novo .ck-novo-note{ color:var(--text-dim); font-size:0.88rem; line-height:1.6; margin-bottom:14px; }
   .ck-pair{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
@@ -407,10 +419,18 @@
     .btn-primary{ padding:16px 24px; }
     .ck-inner{ padding:24px 20px 22px; }
     .ck-pair{ grid-template-columns:1fr; }
+    /* Lista compacta: Nome e E-mail aparecem mais cedo mesmo com vários concursos */
+    .ck-desc{ font-size:0.86rem; }
+    .ck-group{ margin-top:18px; }
+    .ck-option{ padding:9px 2px; gap:12px; }
+    .ck-opt-text{ font-size:0.88rem; line-height:1.35; gap:2px 12px; }
+    .ck-opt-meta{ font-size:0.76rem; }
+    .ck-skel{ padding:11px 2px; }
   }
   @media (prefers-reduced-motion: reduce){
     #needle{ transition:none; }
-    .ck-wait::before{ animation:none; border-color:var(--accent); }
+    .ck-wait::before, .ck-status.carregando::before{ animation:none; border-color:var(--accent); }
+    .ck-skel span{ animation:none; }
     .option .marker::after{ transition:none; }
     *{ transition-duration:0s !important; }
     html{ scroll-behavior:auto; }
@@ -439,7 +459,9 @@
         <a href="#teste" class="link-secondary">Testar uma questão</a>
       </div>
       <p class="price-note">Pacote com 12 simulados, <span class="nw">menos de R$ 6</span> cada. Pagamento único, sem mensalidade.</p>
-      <p class="available"><strong>Já disponíveis:</strong> Transpetro, Engenharia de Produção. <span class="nw">TCE-MA</span>, Contador e Direito. Seu concurso ainda não está na lista? <a href="#disponiveis" class="link-secondary nw">Veja como pedir</a>.</p>
+      <!-- Os nomes vêm da API da loja (a mesma da janela de escolha). Este texto genérico
+           é o que aparece antes de a lista chegar e quando a API não responde. -->
+      <p class="available"><span id="disponiveisResumo">Você vê os concursos disponíveis na hora de garantir o seu pacote.</span> Seu concurso ainda não está na lista? <a href="#disponiveis" class="link-secondary nw">Veja como pedir</a>.</p>
     </div>
 
     <div class="dial-stage" id="dialStage" aria-hidden="true">
@@ -520,11 +542,9 @@
     <div class="section-grid">
       <div class="sticky-col">
         <h2><span class="lead-word">Já disponíveis</span><span class="rest-words">e novos entrando.</span></h2>
-        <div class="open-list">
-          <div class="open-item"><span>Transpetro, Engenharia de Produção</span><span class="banca">Cesgranrio</span></div>
-          <div class="open-item"><span>TCE-MA, Contador</span><span class="banca">Cebraspe</span></div>
-          <div class="open-item"><span>TCE-MA, Direito</span><span class="banca">Cebraspe</span></div>
-        </div>
+        <!-- Preenchida pela API da loja; sem resposta, fica o texto genérico abaixo -->
+        <div class="open-list" id="disponiveisLista" hidden></div>
+        <p class="body-text" id="disponiveisGenerico">A lista completa de concursos disponíveis aparece na hora de garantir o seu pacote.</p>
         <div class="request">
           <strong>Seu concurso ainda não está aqui?</strong>
           <p>Compre normalmente e informe o concurso e o cargo. O primeiro simulado é liberado em até 24 horas, e os outros chegam em seguida.</p>
@@ -624,7 +644,7 @@
       <legend>Concurso</legend>
       <div id="ckList"></div>
       <p class="ck-status" id="ckListStatus" role="status"></p>
-      <p class="ck-error" id="errConcurso"></p>
+      <p class="ck-error" id="errConcurso" role="alert"></p>
     </fieldset>
 
     <div class="ck-novo" id="ckNovo" hidden>
@@ -906,6 +926,12 @@
 
   let concursos = null;       // lista da API, quando chegar
   let carregando = null;      // promessa da requisição da lista em andamento
+  // Render acordando pode levar perto de 1 minuto: com a janela aberta, a LISTA (só o GET,
+  // nunca o pedido) é pedida de novo sozinha, com estas pausas antes da 2ª e da 3ª tentativa
+  const PAUSAS_LISTA_MS = [3000, 6000];
+  let tentativaLista = 0;
+  let proximaTentativa = null; // timer da próxima tentativa automática da lista
+  let listaLenta = false;     // passou de PACIENCIA_MS sem resposta (servidor iniciando)
   let pedidoCtrl = null;      // AbortController do pedido em andamento
   let timerLista = null;
   let quemAbriu = null;
@@ -1012,13 +1038,64 @@
   };
 
   // ---- lista de concursos ----
-  function carregarConcursos(){
+  const carregandoLista = () => !!(carregando || proximaTentativa);
+
+  function carregarConcursos(automatica = false){
     if(concursos || carregando) return;
-    carregando = pedir(API + '/loja/concursos/', {}, () => { if(dlg.open && !concursos) mostrarAtalho(); }).p
+    if(!automatica){ tentativaLista = 0; listaLenta = false; }
+    tentativaLista++;
+    carregando = pedir(API + '/loja/concursos/', {}, () => {
+      listaLenta = true;
+      if(dlg.open && !concursos){ renderLista(); mostrarAtalho(); }
+    }).p
       .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(lista => { concursos = Array.isArray(lista) ? lista : []; })
       .catch(() => {})
-      .finally(() => { carregando = null; renderLista(); });
+      .finally(() => {
+        carregando = null;
+        if(!concursos && dlg.open && tentativaLista <= PAUSAS_LISTA_MS.length){
+          // Falhou com a janela aberta: o servidor pode estar acordando; tenta de novo sozinho
+          listaLenta = true;
+          proximaTentativa = setTimeout(() => { proximaTentativa = null; carregarConcursos(true); },
+            PAUSAS_LISTA_MS[tentativaLista - 1]);
+        } else {
+          listaLenta = false;
+        }
+        renderLista();
+        renderVitrine();
+      });
+  }
+
+  // "Já disponíveis" da página: mesma lista da janela. Sem lista, fica o texto genérico do HTML.
+  const disponiveisResumo = document.getElementById('disponiveisResumo');
+  const disponiveisLista = document.getElementById('disponiveisLista');
+  const disponiveisGenerico = document.getElementById('disponiveisGenerico');
+  const RESUMO_GENERICO = disponiveisResumo.textContent;
+
+  function renderVitrine(){
+    const lista = concursos || [];
+    disponiveisLista.innerHTML = '';
+    if(!lista.length){
+      disponiveisResumo.textContent = RESUMO_GENERICO;
+      disponiveisLista.hidden = true;
+      disponiveisGenerico.hidden = false;
+      return;
+    }
+    // Nomes entram como texto (nunca como HTML): vêm do admin
+    const nomes = lista.map(c => c.nome);
+    const mostrar = nomes.length > 3 ? nomes.slice(0, 3).concat(`mais ${nomes.length - 3}`) : nomes;
+    disponiveisResumo.textContent = '';
+    const rotulo = document.createElement('strong'); rotulo.textContent = 'Já disponíveis:';
+    disponiveisResumo.append(rotulo, ' ' + new Intl.ListFormat('pt-BR', { type: 'conjunction' }).format(mostrar) + '.');
+    lista.forEach(c => {
+      const item = document.createElement('div'); item.className = 'open-item';
+      const nome = document.createElement('span'); nome.textContent = c.nome;
+      const banca = document.createElement('span'); banca.className = 'banca'; banca.textContent = c.banca || '';
+      item.append(nome, banca);
+      disponiveisLista.appendChild(item);
+    });
+    disponiveisLista.hidden = false;
+    disponiveisGenerico.hidden = true;
   }
 
   function opcao(valor, nome, meta){
@@ -1048,8 +1125,23 @@
     if(volta) volta.checked = true;
     if(focado !== null) ckList.querySelector('input[value="' + CSS.escape(focado) + '"]').focus();
 
-    if(carregando){
-      ckListStatus.textContent = 'Carregando concursos…';
+    // Enquanto carrega: linhas "fantasma" antes de "Meu concurso não está aqui",
+    // para essa opção não parecer a única
+    const esperando = carregandoLista();
+    ckList.setAttribute('aria-busy', esperando ? 'true' : 'false');
+    ckListStatus.classList.toggle('carregando', esperando);
+    if(esperando){
+      for(let i = 0; i < 3; i++){
+        const s = document.createElement('div'); s.className = 'ck-skel'; s.setAttribute('aria-hidden', 'true');
+        s.appendChild(document.createElement('span'));
+        ckList.insertBefore(s, ckList.lastElementChild);
+      }
+    }
+
+    if(esperando){
+      ckListStatus.textContent = listaLenta
+        ? 'O servidor está iniciando. Isso pode levar até 1 minuto…'
+        : 'Carregando concursos…';
     } else if(!concursos){
       ckListStatus.innerHTML = 'Não conseguimos carregar a lista agora. ';
       const b = document.createElement('button');
@@ -1093,13 +1185,17 @@
     alvo.focus();
 
     clearTimeout(timerLista);
-    if(carregando) timerLista = setTimeout(() => { if(carregando) mostrarAtalho(); }, PACIENCIA_MS);
+    if(carregandoLista()) timerLista = setTimeout(() => {
+      if(carregandoLista()){ listaLenta = true; renderLista(); mostrarAtalho(); }
+    }, PACIENCIA_MS);
   }
 
   function fechar(){ if(dlg.open) dlg.close(); }
 
   dlg.addEventListener('close', () => {
     clearTimeout(timerLista);
+    // Janela fechada: para as tentativas automáticas da lista (recomeçam ao abrir de novo)
+    clearTimeout(proximaTentativa); proximaTentativa = null;
     if(pedidoCtrl){ pedidoCtrl.abort('fechou'); pedidoCtrl = null; }
     ckWait.textContent = '';
     ckSubmit.disabled = false;
@@ -1182,9 +1278,12 @@
         return;  // segue "ocupado" até a Hotmart abrir
       }
       ckWait.textContent = '';
-      if(r.status === 400 || r.status === 429){
+      if(r.status === 400 && /concurso não está disponível/i.test(dados.erro || '')){
+        // O concurso saiu da vitrine: a lista é recarregada aqui mesmo, sem precisar atualizar a página
+        ckAlert.textContent = 'Esse concurso saiu da lista. Escolha outro ou peça o seu em “Meu concurso não está aqui”.';
+        concursos = null; carregarConcursos(); renderLista();
+      } else if(r.status === 400 || r.status === 429){
         ckAlert.textContent = dados.erro || 'Confira os dados e tente de novo.';
-        if(r.status === 400 && /concurso não está disponível/i.test(dados.erro || '')){ concursos = null; carregarConcursos(); renderLista(); }
       } else if(r.status === 422){
         ckAlert.textContent = 'Confira os dados do formulário e tente de novo.';
       } else {
