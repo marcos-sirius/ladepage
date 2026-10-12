@@ -309,6 +309,84 @@
   footer a{ color:var(--text-dim); text-decoration:none; transition:color 0.2s ease; }
   footer a:hover{ color:var(--text); }
 
+  /* JANELA DE ESCOLHA (checkout) */
+  html.ck-open{ overflow:hidden; }
+  .checkout{
+    padding:0; margin:auto; border:1px solid var(--line); border-radius:3px;
+    background:var(--bg-elevated); color:var(--text); color-scheme:dark;
+    width:min(560px, calc(100% - 32px)); max-height:calc(100dvh - 32px); overflow:auto;
+  }
+  .checkout::backdrop{ background:rgba(5,5,6,0.8); }
+  .checkout [hidden]{ display:none !important; }
+  .ck-inner{ padding:32px 36px 28px; }
+  .ck-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+  .ck-head h2{ font-family:var(--serif); font-weight:500; font-size:1.6rem; line-height:1.2; }
+  .ck-head h2:focus{ outline:none; }
+  .ck-close{
+    background:none; border:none; color:var(--text-dim); font-size:1.6rem; line-height:1;
+    width:40px; height:40px; margin:-8px -10px 0 0; cursor:pointer; flex-shrink:0;
+    transition:color 0.2s ease;
+  }
+  .ck-close:hover{ color:var(--text); }
+  .ck-desc{ margin-top:8px; color:var(--text-dim); font-size:0.92rem; line-height:1.6; }
+  .ck-group{ border:none; margin-top:24px; min-width:0; }
+  .ck-group legend, .ck-field label{ font-size:0.84rem; color:var(--text-dim); margin-bottom:8px; }
+  .ck-group legend{ padding:0; }
+  .ck-option{
+    display:flex; align-items:center; gap:14px; padding:12px 4px;
+    border-top:1px solid var(--line); cursor:pointer; transition:background 0.2s ease;
+  }
+  .ck-option:last-child{ border-bottom:1px solid var(--line); }
+  .ck-option:hover{ background:rgba(255,255,255,0.03); }
+  .ck-option input{
+    appearance:none; -webkit-appearance:none; margin:0; flex-shrink:0; cursor:pointer;
+    width:20px; height:20px; border:1px solid var(--line); border-radius:50%;
+    transition:border-color 0.2s ease;
+  }
+  .ck-option input:checked{
+    border-color:var(--accent);
+    background:radial-gradient(circle, var(--accent) 0 4.5px, transparent 5px);
+  }
+  .ck-option input:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .ck-opt-text{ display:flex; justify-content:space-between; align-items:baseline; gap:4px 16px; flex-wrap:wrap; flex:1; min-width:0; font-size:0.95rem; }
+  .ck-opt-meta{ margin-left:auto; color:var(--text-dim); font-size:0.84rem; }
+  .ck-status{ margin-top:12px; color:var(--text-dim); font-size:0.88rem; line-height:1.6; }
+  .ck-status:empty{ display:none; }
+  .ck-novo{ margin-top:18px; padding:18px 18px 4px; border:1px solid var(--accent); border-radius:3px; }
+  .ck-novo .ck-novo-note{ color:var(--text-dim); font-size:0.88rem; line-height:1.6; margin-bottom:14px; }
+  .ck-pair{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+  .ck-field{ margin-top:18px; }
+  .ck-novo .ck-field{ margin-top:0; margin-bottom:14px; }
+  .ck-field label{ display:block; }
+  .ck-field label .opt{ font-size:0.8rem; }
+  .ck-field input{
+    width:100%; background:var(--bg); color:var(--text);
+    border:1px solid var(--line); border-radius:2px; padding:12px 14px;
+    font-family:var(--sans); font-size:1rem; transition:border-color 0.2s ease;
+  }
+  .ck-field input::placeholder{ color:var(--text-dim); opacity:0.6; }
+  .ck-field input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+  .ck-field input[aria-invalid="true"]{ border-color:var(--wrong); }
+  .ck-field input[aria-invalid="true"]:focus{ box-shadow:0 0 0 1px var(--wrong); }
+  .ck-error{ margin-top:6px; color:var(--wrong); font-size:0.84rem; line-height:1.5; }
+  .ck-error:empty{ display:none; }
+  .ck-hint{ margin-top:6px; font-size:0.84rem; color:var(--text-dim); }
+  .ck-hint button{ font-size:0.84rem; }
+  .ck-alert{ margin-top:20px; padding:12px 14px; border:1px solid var(--wrong); border-radius:2px; color:var(--text); font-size:0.9rem; line-height:1.55; }
+  .ck-alert:empty{ display:none; }
+  .ck-wait{ margin-top:20px; display:flex; align-items:center; gap:10px; color:var(--accent); font-size:0.92rem; }
+  .ck-wait:empty{ display:none; }
+  .ck-wait::before{
+    content:''; width:14px; height:14px; flex-shrink:0; border-radius:50%;
+    border:2px solid var(--line); border-top-color:var(--accent); animation:ck-spin 0.9s linear infinite;
+  }
+  @keyframes ck-spin{ to{ transform:rotate(360deg); } }
+  .ck-fallback{ margin-top:16px; padding:14px 16px; border:1px solid var(--line); border-radius:2px; font-size:0.9rem; line-height:1.6; color:var(--text-dim); }
+  .ck-fallback a{ display:inline-block; margin-top:8px; }
+  .ck-submit{ width:100%; margin-top:24px; }
+  .ck-submit:disabled{ opacity:0.6; cursor:default; }
+  .ck-foot{ margin-top:12px; text-align:center; color:var(--text-dim); font-size:0.82rem; }
+
   @media (max-width: 920px){ .proof-grid{ grid-template-columns:repeat(2, 1fr); } }
   @media (max-width: 860px){
     .wrap{ padding:0 20px; }
@@ -327,9 +405,12 @@
     .cta-row{ flex-direction:column; align-items:stretch; gap:18px; }
     .cta-row .link-secondary{ align-self:center; }
     .btn-primary{ padding:16px 24px; }
+    .ck-inner{ padding:24px 20px 22px; }
+    .ck-pair{ grid-template-columns:1fr; }
   }
   @media (prefers-reduced-motion: reduce){
     #needle{ transition:none; }
+    .ck-wait::before{ animation:none; border-color:var(--accent); }
     .option .marker::after{ transition:none; }
     *{ transition-duration:0s !important; }
     html{ scroll-behavior:auto; }
@@ -354,7 +435,7 @@
       <h1 id="hero-title">Simulados montados pelo edital do seu concurso.</h1>
       <p class="lede">Questões no estilo da sua banca, na mesma proporção de matérias da prova. Cada simulado vem com correção comentada e um raio-x dos assuntos em que você mais erra.</p>
       <div class="cta-row">
-        <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary">Garantir por R$ 67,90</a>
+        <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary" data-checkout>Garantir por R$ 67,90</a>
         <a href="#teste" class="link-secondary">Testar uma questão</a>
       </div>
       <p class="price-note">Pacote com 12 simulados, <span class="nw">menos de R$ 6</span> cada. Pagamento único, sem mensalidade.</p>
@@ -406,7 +487,7 @@
           <p class="price-line"><s><span class="sr-only">De </span>R$ 98,90</s><span class="nw">R$ 67,90</span> pelo pacote</p>
           <p class="price-sub">Pagamento único. O acesso não vira mensalidade.</p>
           <div class="cta-row">
-            <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary">Garantir por R$ 67,90</a>
+            <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary" data-checkout>Garantir por R$ 67,90</a>
           </div>
         </div>
       </div>
@@ -515,7 +596,7 @@
   <section class="cta-final" aria-labelledby="cta-title">
     <h2 id="cta-title">Pronto para treinar contra a banca de verdade?</h2>
     <div class="cta-row">
-      <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary">Garantir por R$ 67,90</a>
+      <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary" data-checkout>Garantir por R$ 67,90</a>
     </div>
     <p class="price-note">12 simulados. Pagamento único. Garantia de <span class="nw">7 dias</span>.</p>
   </section>
@@ -530,6 +611,71 @@
     </nav>
   </footer>
 </div>
+
+<dialog class="checkout" id="checkout" aria-labelledby="ckTitle" aria-describedby="ckDesc">
+  <form class="ck-inner" id="ckForm" novalidate>
+    <div class="ck-head">
+      <h2 id="ckTitle" tabindex="-1">Escolha seu concurso</h2>
+      <button type="button" class="ck-close" id="ckClose" aria-label="Fechar">×</button>
+    </div>
+    <p class="ck-desc" id="ckDesc">Pacote com 12 simulados por <span class="nw">R$ 67,90</span>. Pagamento único, garantia de <span class="nw">7 dias</span>.</p>
+
+    <fieldset class="ck-group" aria-describedby="errConcurso">
+      <legend>Concurso</legend>
+      <div id="ckList"></div>
+      <p class="ck-status" id="ckListStatus" role="status"></p>
+      <p class="ck-error" id="errConcurso"></p>
+    </fieldset>
+
+    <div class="ck-novo" id="ckNovo" hidden>
+      <p class="ck-novo-note">Conte qual é o concurso. O primeiro simulado é liberado em até 24 horas depois do pagamento.</p>
+      <div class="ck-pair">
+        <div class="ck-field">
+          <label for="ckNovoConcurso">Concurso</label>
+          <input id="ckNovoConcurso" maxlength="200" placeholder="Ex.: TRT 2ª Região" aria-describedby="errNovoConcurso">
+          <p class="ck-error" id="errNovoConcurso"></p>
+        </div>
+        <div class="ck-field">
+          <label for="ckNovoCargo">Cargo</label>
+          <input id="ckNovoCargo" maxlength="200" placeholder="Ex.: Analista Judiciário" aria-describedby="errNovoCargo">
+          <p class="ck-error" id="errNovoCargo"></p>
+        </div>
+      </div>
+      <div class="ck-field">
+        <label for="ckNovoBanca">Banca <span class="opt">(se já souber)</span></label>
+        <input id="ckNovoBanca" maxlength="100" placeholder="Ex.: FCC" aria-describedby="errNovoBanca">
+        <p class="ck-error" id="errNovoBanca"></p>
+      </div>
+      <div class="ck-field">
+        <label for="ckNovoEdital">Link do edital <span class="opt">(opcional)</span></label>
+        <input id="ckNovoEdital" type="url" inputmode="url" maxlength="500" placeholder="https://" aria-describedby="errNovoEdital">
+        <p class="ck-error" id="errNovoEdital"></p>
+      </div>
+    </div>
+
+    <div class="ck-field">
+      <label for="ckNome">Nome</label>
+      <input id="ckNome" autocomplete="name" maxlength="150" aria-describedby="errNome">
+      <p class="ck-error" id="errNome"></p>
+    </div>
+    <div class="ck-field">
+      <label for="ckEmail">E-mail <span class="opt">(o acesso chega nele)</span></label>
+      <input id="ckEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" aria-describedby="errEmail ckEmailHint">
+      <p class="ck-error" id="errEmail"></p>
+      <p class="ck-hint" id="ckEmailHint" hidden></p>
+    </div>
+
+    <p class="ck-alert" id="ckAlert" role="alert"></p>
+    <p class="ck-wait" id="ckWait" role="status"></p>
+    <div class="ck-fallback" id="ckFallback" hidden>
+      <p>Nosso sistema está demorando para responder. Você pode seguir direto para o pagamento na Hotmart. Use o mesmo e-mail: se o concurso escolhido não ficar registrado, entramos em contato por ele para confirmar.</p>
+      <a class="link-secondary" id="ckDirect" href="https://pay.hotmart.com/Q106592239T?off=rkiofuef">Ir direto para o pagamento</a>
+    </div>
+
+    <button type="submit" class="btn-primary ck-submit" id="ckSubmit">Continuar para o pagamento</button>
+    <p class="ck-foot">O pagamento é feito na Hotmart.</p>
+  </form>
+</dialog>
 
 <script>
   // ---------- dial ----------
@@ -727,6 +873,343 @@
   });
 
   render();
+
+  // ---------- janela de escolha do concurso (loja) ----------
+  // Os botões "Garantir" continuam com o link da Hotmart no href: sem JS, ou com
+  // Ctrl/Cmd+clique, o aluno ainda chega ao pagamento.
+  const API = 'https://concursoelite.onrender.com/api';
+  const PACIENCIA_MS = 10000;  // depois disso, oferece o link direto da Hotmart
+  const LIMITE_MS = 40000;     // depois disso, desiste da requisição
+  const NOVO = 'novo';
+  const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+  // Erros de digitação comuns no domínio do e-mail (só sugere, não bloqueia)
+  const DOMINIOS_TROCADOS = {
+    'gmial.com':'gmail.com', 'gmai.com':'gmail.com', 'gamil.com':'gmail.com', 'gmail.co':'gmail.com',
+    'gmail.con':'gmail.com', 'gmail.com.br':'gmail.com', 'gnail.com':'gmail.com',
+    'hotmial.com':'hotmail.com', 'hotmai.com':'hotmail.com', 'hotmail.con':'hotmail.com', 'hotmal.com':'hotmail.com',
+    'outlok.com':'outlook.com', 'outlook.con':'outlook.com', 'yahoo.con':'yahoo.com', 'yaho.com.br':'yahoo.com.br'
+  };
+
+  const dlg = document.getElementById('checkout');
+  const form = document.getElementById('ckForm');
+  const ckTitle = document.getElementById('ckTitle');
+  const ckList = document.getElementById('ckList');
+  const ckListStatus = document.getElementById('ckListStatus');
+  const ckNovo = document.getElementById('ckNovo');
+  const ckAlert = document.getElementById('ckAlert');
+  const ckWait = document.getElementById('ckWait');
+  const ckFallback = document.getElementById('ckFallback');
+  const ckDirect = document.getElementById('ckDirect');
+  const ckSubmit = document.getElementById('ckSubmit');
+  const ckEmailHint = document.getElementById('ckEmailHint');
+  const HOTMART = document.querySelector('[data-checkout]').href;
+
+  let concursos = null;       // lista da API, quando chegar
+  let carregando = null;      // promessa da requisição da lista em andamento
+  let pedidoCtrl = null;      // AbortController do pedido em andamento
+  let timerLista = null;
+  let quemAbriu = null;
+  let tentouEnviar = false;
+
+  // Campos com validação: cada regra devolve a mensagem de erro, ou '' se estiver ok
+  const CAMPOS = {
+    nome: { el: document.getElementById('ckNome'), err: document.getElementById('errNome'),
+      regra: v => !v ? 'Informe seu nome.' : v.length < 2 ? 'Nome muito curto.' : '' },
+    email: { el: document.getElementById('ckEmail'), err: document.getElementById('errEmail'),
+      regra: v => !v ? 'Informe seu e-mail. É nele que chega o acesso.'
+        : !v.includes('@') ? 'Falta o @ no e-mail (ex.: nome@gmail.com).'
+        : !EMAIL_RE.test(v) ? 'Confira o e-mail: parece incompleto (ex.: nome@gmail.com).' : '' },
+    novoConcurso: { el: document.getElementById('ckNovoConcurso'), err: document.getElementById('errNovoConcurso'), novo: true,
+      regra: v => !v ? 'Informe o concurso.' : '' },
+    novoCargo: { el: document.getElementById('ckNovoCargo'), err: document.getElementById('errNovoCargo'), novo: true,
+      regra: v => !v ? 'Informe o cargo.' : '' },
+    novoBanca: { el: document.getElementById('ckNovoBanca'), err: document.getElementById('errNovoBanca'), novo: true,
+      regra: () => '' },
+    novoEdital: { el: document.getElementById('ckNovoEdital'), err: document.getElementById('errNovoEdital'), novo: true,
+      regra: v => !v ? '' : !/^https?:\/\/\S+\.\S+/i.test(v) ? 'O link precisa começar com http:// ou https://' : '' }
+  };
+  const errConcurso = document.getElementById('errConcurso');
+
+  const valor = c => c.el.value.trim();
+  const escolha = () => (form.querySelector('input[name="concurso"]:checked') || {}).value || '';
+  // Na ordem em que aparecem na tela (os campos do concurso novo vêm antes de nome e e-mail)
+  const ativos = () => Object.values(CAMPOS).filter(c => !c.novo || escolha() === NOVO)
+    .sort((a, b) => a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+
+  function validarCampo(c, mostrar){
+    const msg = c.regra(valor(c));
+    if(mostrar){
+      c.err.textContent = msg;
+      c.el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    }
+    return !msg;
+  }
+
+  function validarEscolha(mostrar){
+    const msg = escolha() ? '' : 'Escolha um concurso ou a opção “Meu concurso não está aqui”.';
+    if(mostrar) errConcurso.textContent = msg;
+    return !msg;
+  }
+
+  // Validação em tempo real: o erro aparece ao sair do campo (ou depois de tentar
+  // enviar) e some assim que o texto é corrigido, sem brigar com quem ainda digita.
+  Object.values(CAMPOS).forEach(c => {
+    c.el.addEventListener('blur', () => { if(valor(c) || tentouEnviar) validarCampo(c, true); });
+    c.el.addEventListener('input', () => {
+      if(tentouEnviar || c.el.getAttribute('aria-invalid') === 'true') validarCampo(c, true);
+      if(c === CAMPOS.email) sugerirEmail();
+      ckAlert.textContent = '';
+    });
+  });
+
+  function sugerirEmail(){
+    const v = valor(CAMPOS.email).toLowerCase();
+    const [usuario, dominio] = v.split('@');
+    const certo = DOMINIOS_TROCADOS[dominio];
+    ckEmailHint.hidden = !(usuario && certo);
+    if(ckEmailHint.hidden) return;
+    const sugestao = usuario + '@' + certo;
+    ckEmailHint.textContent = 'Você quis dizer ';
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'text-btn'; b.textContent = sugestao;
+    b.addEventListener('click', () => {
+      CAMPOS.email.el.value = sugestao;
+      ckEmailHint.hidden = true;
+      validarCampo(CAMPOS.email, true);
+      CAMPOS.email.el.focus();
+    });
+    ckEmailHint.appendChild(b);
+    ckEmailHint.appendChild(document.createTextNode('?'));
+  }
+
+  // fetch com prazo: avisa em PACIENCIA_MS e desiste em LIMITE_MS
+  function pedir(url, opcoes, aoDemorar){
+    const ctrl = new AbortController();
+    const avisa = setTimeout(aoDemorar, PACIENCIA_MS);
+    const desiste = setTimeout(() => ctrl.abort('tempo'), LIMITE_MS);
+    const p = fetch(url, { ...opcoes, signal: ctrl.signal })
+      .finally(() => { clearTimeout(avisa); clearTimeout(desiste); });
+    return { p, ctrl };
+  }
+
+  function linkDireto(){
+    // Leva nome e e-mail já preenchidos: o webhook encontra o pedido pelo e-mail
+    const u = new URL(HOTMART);
+    const email = valor(CAMPOS.email), nome = valor(CAMPOS.nome);
+    if(EMAIL_RE.test(email)) u.searchParams.set('email', email.toLowerCase());
+    if(nome) u.searchParams.set('name', nome);
+    return u.href;
+  }
+
+  function mostrarAtalho(){
+    ckDirect.href = linkDireto();
+    ckFallback.hidden = false;
+  }
+
+  const checkoutSeguro = u => {
+    try{ const x = new URL(u); return x.protocol === 'https:' && (x.hostname === 'hotmart.com' || x.hostname.endsWith('.hotmart.com')); }
+    catch(e){ return false; }
+  };
+
+  // ---- lista de concursos ----
+  function carregarConcursos(){
+    if(concursos || carregando) return;
+    carregando = pedir(API + '/loja/concursos/', {}, () => { if(dlg.open && !concursos) mostrarAtalho(); }).p
+      .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(lista => { concursos = Array.isArray(lista) ? lista : []; })
+      .catch(() => {})
+      .finally(() => { carregando = null; renderLista(); });
+  }
+
+  function opcao(valor, nome, meta){
+    const label = document.createElement('label');
+    label.className = 'ck-option';
+    const input = document.createElement('input');
+    input.type = 'radio'; input.name = 'concurso'; input.value = valor;
+    const texto = document.createElement('span');
+    texto.className = 'ck-opt-text';
+    const n = document.createElement('span'); n.textContent = nome; texto.appendChild(n);
+    if(meta){ const m = document.createElement('span'); m.className = 'ck-opt-meta'; m.textContent = meta; texto.appendChild(m); }
+    label.append(input, texto);
+    return label;
+  }
+
+  function renderLista(){
+    const marcado = escolha();
+    // Se o foco estava numa opção, devolve à mesma opção depois de recriar a lista
+    const focado = ckList.contains(document.activeElement) ? document.activeElement.value : null;
+    ckList.innerHTML = '';
+    (concursos || []).forEach(c => {
+      const formato = c.formato === 'CE' ? 'certo ou errado' : 'múltipla escolha';
+      ckList.appendChild(opcao(String(c.id), c.nome, [c.banca, formato].filter(Boolean).join(', ')));
+    });
+    ckList.appendChild(opcao(NOVO, 'Meu concurso não está aqui', 'primeiro simulado em até 24h'));
+    const volta = ckList.querySelector('input[value="' + CSS.escape(marcado) + '"]');
+    if(volta) volta.checked = true;
+    if(focado !== null) ckList.querySelector('input[value="' + CSS.escape(focado) + '"]').focus();
+
+    if(carregando){
+      ckListStatus.textContent = 'Carregando concursos…';
+    } else if(!concursos){
+      ckListStatus.innerHTML = 'Não conseguimos carregar a lista agora. ';
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'text-btn'; b.textContent = 'Tentar de novo';
+      b.addEventListener('click', () => { carregarConcursos(); renderLista(); });
+      ckListStatus.appendChild(b);
+      if(dlg.open) mostrarAtalho();
+    } else {
+      ckListStatus.textContent = '';
+      if(!ckWait.textContent) ckFallback.hidden = true;
+    }
+    atualizarNovo();
+  }
+
+  function atualizarNovo(){
+    ckNovo.hidden = escolha() !== NOVO;
+  }
+
+  ckList.addEventListener('change', () => {
+    atualizarNovo();
+    validarEscolha(tentouEnviar || errConcurso.textContent !== '');
+    ckAlert.textContent = '';
+  });
+
+  // ---- abrir e fechar ----
+  function abrir(botao){
+    quemAbriu = botao;
+    tentouEnviar = false;
+    ckAlert.textContent = '';
+    ckWait.textContent = '';
+    ckFallback.hidden = true;
+    errConcurso.textContent = '';
+    Object.values(CAMPOS).forEach(c => { c.err.textContent = ''; c.el.removeAttribute('aria-invalid'); });
+    ckSubmit.disabled = false;
+
+    carregarConcursos();
+    renderLista();
+    document.documentElement.classList.add('ck-open');
+    dlg.showModal();
+    const alvo = form.querySelector('input[name="concurso"]:checked') || (concursos && concursos.length ? ckList.querySelector('input') : ckTitle);
+    alvo.focus();
+
+    clearTimeout(timerLista);
+    if(carregando) timerLista = setTimeout(() => { if(carregando) mostrarAtalho(); }, PACIENCIA_MS);
+  }
+
+  function fechar(){ if(dlg.open) dlg.close(); }
+
+  dlg.addEventListener('close', () => {
+    clearTimeout(timerLista);
+    if(pedidoCtrl){ pedidoCtrl.abort('fechou'); pedidoCtrl = null; }
+    ckWait.textContent = '';
+    ckSubmit.disabled = false;
+    document.documentElement.classList.remove('ck-open');
+    if(quemAbriu) quemAbriu.focus();
+  });
+
+  document.getElementById('ckClose').addEventListener('click', fechar);
+
+  // Clique fora fecha. Só conta se o clique começou e terminou no fundo:
+  // arrastar a seleção de um campo até fora da janela não fecha.
+  // Confere pela posição: a barra de rolagem da janela também tem o dlg como alvo.
+  const foraDaJanela = e => {
+    if(e.target !== dlg) return false;
+    const r = dlg.getBoundingClientRect();
+    return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+  };
+  let apertouFora = false;
+  dlg.addEventListener('pointerdown', e => { apertouFora = foraDaJanela(e); });
+  dlg.addEventListener('click', e => { if(apertouFora && foraDaJanela(e)) fechar(); apertouFora = false; });
+
+  // Foco preso: Tab no último elemento volta ao primeiro, e vice-versa
+  dlg.addEventListener('keydown', e => {
+    if(e.key !== 'Tab') return;
+    const focaveis = [...dlg.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])')]
+      .filter(el => !el.disabled && el.getClientRects().length && !(el.type === 'radio' && !el.checked && form.querySelector('input[name="' + el.name + '"]:checked')));
+    if(!focaveis.length) return;
+    const primeiro = focaveis[0], ultimo = focaveis[focaveis.length - 1];
+    if(e.shiftKey && (document.activeElement === primeiro || document.activeElement === ckTitle)){ e.preventDefault(); ultimo.focus(); }
+    else if(!e.shiftKey && document.activeElement === ultimo){ e.preventDefault(); primeiro.focus(); }
+  });
+
+  document.querySelectorAll('[data-checkout]').forEach(a => {
+    a.addEventListener('click', e => {
+      if(e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      abrir(a);
+    });
+  });
+
+  // ---- enviar o pedido ----
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if(pedidoCtrl) return;
+    tentouEnviar = true;
+    ckAlert.textContent = '';
+
+    const okEscolha = validarEscolha(true);
+    const invalidos = ativos().filter(c => !validarCampo(c, true));
+    if(!okEscolha){ (form.querySelector('input[name="concurso"]') || ckTitle).focus(); return; }
+    if(invalidos.length){ invalidos[0].el.focus(); return; }
+
+    const id = escolha();
+    const corpo = { email: valor(CAMPOS.email).toLowerCase(), nome: valor(CAMPOS.nome) };
+    if(id === NOVO){
+      corpo.novo_concurso = valor(CAMPOS.novoConcurso);
+      corpo.novo_cargo = valor(CAMPOS.novoCargo);
+      corpo.novo_banca = valor(CAMPOS.novoBanca);
+      corpo.novo_edital_url = valor(CAMPOS.novoEdital);
+    } else {
+      corpo.concurso_id = Number(id);
+    }
+
+    ckSubmit.disabled = true;
+    ckFallback.hidden = true;
+    ckWait.textContent = 'Preparando seu pedido…';
+    const req = pedir(API + '/loja/pedidos/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(corpo)
+    }, mostrarAtalho);
+    pedidoCtrl = req.ctrl;
+
+    try{
+      const r = await req.p;
+      const dados = await r.json().catch(() => ({}));
+      if(r.ok && checkoutSeguro(dados.checkout_url)){
+        ckWait.textContent = 'Pedido pronto. Levando você ao pagamento…';
+        window.location.assign(dados.checkout_url);
+        return;  // segue "ocupado" até a Hotmart abrir
+      }
+      ckWait.textContent = '';
+      if(r.status === 400 || r.status === 429){
+        ckAlert.textContent = dados.erro || 'Confira os dados e tente de novo.';
+        if(r.status === 400 && /concurso não está disponível/i.test(dados.erro || '')){ concursos = null; carregarConcursos(); renderLista(); }
+      } else if(r.status === 422){
+        ckAlert.textContent = 'Confira os dados do formulário e tente de novo.';
+      } else {
+        ckAlert.textContent = 'Não conseguimos preparar seu pedido agora.';
+        mostrarAtalho();
+      }
+    } catch(err){
+      if(req.ctrl.signal.reason === 'fechou') return;
+      ckWait.textContent = '';
+      ckAlert.textContent = req.ctrl.signal.reason === 'tempo'
+        ? 'O sistema não respondeu a tempo.'
+        : 'Não conseguimos falar com o sistema. Confira sua conexão.';
+      mostrarAtalho();
+    } finally{
+      if(pedidoCtrl === req.ctrl && !ckWait.textContent){ pedidoCtrl = null; ckSubmit.disabled = false; }
+    }
+  });
+
+  // Ao voltar da Hotmart pelo botão "voltar", a página pode vir do cache já "ocupada"
+  window.addEventListener('pageshow', e => {
+    if(e.persisted){ pedidoCtrl = null; ckSubmit.disabled = false; ckWait.textContent = ''; }
+  });
+
+  // Busca a lista logo que a página abre (e acorda o servidor, se estiver dormindo)
+  carregarConcursos();
 </script>
 
 </body>
