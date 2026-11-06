@@ -102,6 +102,12 @@
   .link-secondary:hover{ border-color:var(--accent); }
   .price-note{ margin-top:16px; font-size:0.86rem; color:var(--text-dim); }
   .price-note s{ opacity:0.7; }
+  /* "Pagamento único" em destaque perto dos botões: é a dúvida que mais trava a compra */
+  .pay-once{ color:var(--text); font-weight:600; white-space:nowrap; }
+  .pay-once::before{
+    content:''; display:inline-block; width:6px; height:6px; border-radius:50%;
+    background:var(--accent); margin-right:8px; vertical-align:middle; position:relative; top:-1px;
+  }
   .available{
     margin-top:36px; padding-top:20px; border-top:1px solid var(--line);
     font-size:0.9rem; color:var(--text-dim); max-width:46ch; line-height:1.6;
@@ -397,7 +403,9 @@
   .ck-fallback a{ display:inline-block; margin-top:8px; }
   .ck-submit{ width:100%; margin-top:24px; }
   .ck-submit:disabled{ opacity:0.6; cursor:default; }
-  .ck-foot{ margin-top:12px; text-align:center; color:var(--text-dim); font-size:0.82rem; }
+  .ck-foot{ margin-top:12px; text-align:center; color:var(--text-dim); font-size:0.82rem; line-height:1.6; }
+  .ck-foot a{ color:var(--text-dim); text-decoration:underline; text-underline-offset:2px; }
+  .ck-foot a:hover{ color:var(--text); }
 
   @media (max-width: 920px){ .proof-grid{ grid-template-columns:repeat(2, 1fr); } }
   @media (max-width: 860px){
@@ -458,7 +466,7 @@
         <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary" data-checkout>Garantir por R$ 67,90</a>
         <a href="#teste" class="link-secondary">Testar uma questão</a>
       </div>
-      <p class="price-note">Pacote com 12 simulados, <span class="nw">menos de R$ 6</span> cada. Pagamento único, sem mensalidade.</p>
+      <p class="price-note"><span class="pay-once">Pagamento único, sem mensalidade.</span> Pacote com 12 simulados, <span class="nw">menos de R$ 6</span> cada.</p>
       <!-- Os nomes vêm da API da loja (a mesma da janela de escolha). Este texto genérico
            é o que aparece antes de a lista chegar e quando a API não responde. -->
       <p class="available"><span id="disponiveisResumo">Você vê os concursos disponíveis na hora de garantir o seu pacote.</span> Seu concurso ainda não está na lista? <a href="#disponiveis" class="link-secondary nw">Veja como pedir</a>.</p>
@@ -507,7 +515,7 @@
         <div class="price-block">
           <div class="per-sim"><span class="per-num">R$ 5,66</span><span class="per-lbl">por simulado no lançamento</span></div>
           <p class="price-line"><s><span class="sr-only">De </span>R$ 98,90</s><span class="nw">R$ 67,90</span> pelo pacote</p>
-          <p class="price-sub">Pagamento único. O acesso não vira mensalidade.</p>
+          <p class="price-sub"><span class="pay-once">Pagamento único.</span> O acesso não vira mensalidade.</p>
           <div class="cta-row">
             <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary" data-checkout>Garantir por R$ 67,90</a>
           </div>
@@ -618,7 +626,7 @@
     <div class="cta-row">
       <a href="https://pay.hotmart.com/Q106592239T?off=rkiofuef" class="btn-primary" data-checkout>Garantir por R$ 67,90</a>
     </div>
-    <p class="price-note">12 simulados. Pagamento único. Garantia de <span class="nw">7 dias</span>.</p>
+    <p class="price-note"><span class="pay-once">Pagamento único, sem mensalidade.</span> 12 simulados e garantia de <span class="nw">7 dias</span>.</p>
   </section>
 
   </main>
@@ -626,8 +634,8 @@
   <footer>
     <p>© ConcursoPro</p>
     <nav class="footer-links" aria-label="Institucional">
-      <a href="#">Termos</a>
-      <a href="#">Privacidade</a>
+      <a href="termos.html">Termos</a>
+      <a href="privacidade.html">Privacidade</a>
     </nav>
   </footer>
 </div>
@@ -693,7 +701,7 @@
     </div>
 
     <button type="submit" class="btn-primary ck-submit" id="ckSubmit">Continuar para o pagamento</button>
-    <p class="ck-foot">O pagamento é feito na Hotmart.</p>
+    <p class="ck-foot">O pagamento é feito na Hotmart. Ao continuar, você concorda com os <a href="termos.html" target="_blank" rel="noopener">Termos</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
   </form>
 </dialog>
 

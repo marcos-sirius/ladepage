@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidade | ConcursoPro</title>
+<meta name="description" content="Quais dados a ConcursoPro coleta, para que usa, com quem compartilha e como você exerce seus direitos pela LGPD.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Mesmo visual da landing (index.html) e de termos.html. Ao mudar aqui, mude lá. */
+  :root{
+    --bg:#0B0B0C; --text:#ECE7DD; --text-dim:#8C877D; --accent:#B8934F; --line:#3A3733;
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.5; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+  a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .skip-link{
+    position:absolute; left:16px; top:-60px; z-index:10;
+    background:var(--accent); color:#161310; padding:10px 16px;
+    font-weight:600; text-decoration:none; border-radius:2px; transition:top 0.2s ease;
+  }
+  .skip-link:focus{ top:16px; }
+  nav{ display:flex; justify-content:space-between; align-items:center; padding:28px 0; }
+  nav a{ color:var(--text-dim); text-decoration:none; font-size:0.9rem; transition:color 0.2s ease; }
+  nav a:hover{ color:var(--text); }
+  .brand{ font-family:var(--serif); font-weight:500; letter-spacing:0.01em; }
+  nav a.brand{ color:var(--text); font-size:1.15rem; }
+  .brand span{ color:var(--accent); }
+
+  .doc{ max-width:68ch; padding:48px 0 96px; }
+  .doc h1{
+    font-family:var(--serif); font-weight:500; font-size:clamp(2rem, 4vw, 2.8rem);
+    line-height:1.15; letter-spacing:-0.01em; text-wrap:balance;
+  }
+  .doc .updated{ margin-top:12px; color:var(--text-dim); font-size:0.88rem; }
+  .doc .intro{ margin-top:28px; color:var(--text-dim); font-size:1.05rem; line-height:1.7; }
+  .doc h2{
+    margin-top:48px; padding-top:28px; border-top:1px solid var(--line);
+    font-family:var(--serif); font-weight:500; font-size:1.4rem; line-height:1.3;
+  }
+  .doc h3{ margin-top:24px; font-size:1rem; font-weight:600; }
+  .doc p, .doc li{ color:var(--text-dim); font-size:0.98rem; line-height:1.75; text-wrap:pretty; }
+  .doc p{ margin-top:14px; }
+  .doc ul{ margin-top:12px; padding-left:20px; }
+  .doc li + li{ margin-top:8px; }
+  .doc strong{ color:var(--text); font-weight:500; }
+  .doc a{ color:var(--text); text-underline-offset:3px; text-decoration-color:var(--line); transition:text-decoration-color 0.2s ease; }
+  .doc a:hover{ text-decoration-color:var(--accent); }
+  .nw{ white-space:nowrap; }
+
+  footer{
+    padding:36px 0; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+    color:var(--text-dim); font-size:0.82rem;
+  }
+  footer nav{ padding:0; display:flex; gap:20px; }
+  footer a{ color:var(--text-dim); text-decoration:none; transition:color 0.2s ease; }
+  footer a:hover, footer a[aria-current="page"]{ color:var(--text); }
+
+  @media (max-width: 860px){
+    .wrap{ padding:0 20px; }
+    .doc{ padding:24px 0 72px; }
+    footer{ flex-direction:column; gap:12px; align-items:flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition-duration:0s !important; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="wrap">
+  <header>
+    <nav aria-label="Principal">
+      <a href="/" class="brand" aria-label="ConcursoPro, início">Concurso<span>Pro</span></a>
+      <a href="/">Voltar ao início</a>
+    </nav>
+  </header>
+
+  <main id="conteudo" class="doc">
+    <h1>Política de Privacidade</h1>
+    <p class="updated">Última atualização: 6 de novembro de 2026</p>
+    <p class="intro">Esta página explica quais dados a ConcursoPro coleta, para que usa, com quem compartilha e como você pode consultar, corrigir ou apagar seus dados, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018, a LGPD).</p>
+
+    <h2>1. Quem cuida dos seus dados</h2>
+    <p>A ConcursoPro é a responsável pelos dados tratados no site <span class="nw">concursoproelite.com.br</span> e na plataforma de simulados. Para qualquer assunto sobre seus dados, inclusive os pedidos da seção 8, escreva para <a href="mailto:contato@concursoproelite.com.br">contato@concursoproelite.com.br</a>. Esse é também o canal do encarregado pelo tratamento de dados.</p>
+
+    <h2>2. Quais dados coletamos</h2>
+    <h3>Quando você escolhe o concurso</h3>
+    <p>Antes do pagamento, você informa <strong>nome</strong>, <strong class="nw">e-mail</strong> e o concurso escolhido. Se o concurso ainda não estiver disponível, também o nome do concurso, o cargo e, se quiser, a banca e o link do edital.</p>
+
+    <h3>Quando você paga</h3>
+    <p>O pagamento acontece na Hotmart. <strong>Nós não recebemos os dados do seu cartão.</strong> Depois da compra, a Hotmart nos envia um aviso com nome, e-mail, código da transação, produto, valor e forma de pagamento. Esse aviso também traz o CPF, o telefone e o endereço que você informou no checkout. Guardamos esse aviso como registro da compra.</p>
+
+    <h3>Quando você usa a plataforma</h3>
+    <ul>
+      <li><strong>Conta:</strong> nome, e-mail e nome de usuário. A senha é guardada de forma criptografada, e nem nós conseguimos vê-la.</li>
+      <li><strong>Estudo:</strong> respostas, notas, tempo de prova, desempenho por assunto e os recursos que você escrever contra questões.</li>
+    </ul>
+
+    <h3>Dados técnicos</h3>
+    <p>Para bloquear tentativas repetidas de senha e pedidos em sequência, usamos o endereço IP de quem acessa. Ele fica só na memória do servidor, não é gravado no banco de dados e é descartado sempre que o servidor reinicia. O provedor de hospedagem também mantém registros técnicos de acesso, como em qualquer site.</p>
+
+    <h2>3. Para que usamos</h2>
+    <ul>
+      <li><strong>Entregar o que você comprou:</strong> criar sua conta, liberar o acesso ao concurso pago, enviar o link para definir a senha, avisar quando um concurso novo for liberado e responder seus recursos e mensagens. Base legal: execução do contrato (art. 7º, V, da LGPD).</li>
+      <li><strong>Registrar compras e reembolsos:</strong> para cumprir obrigações legais e resolver dúvidas sobre pagamentos. Base legal: cumprimento de obrigação legal e exercício de direitos (art. 7º, II e VI).</li>
+      <li><strong>Proteger a plataforma:</strong> limitar tentativas de acesso e impedir abuso. Base legal: legítimo interesse (art. 7º, IX).</li>
+    </ul>
+    <p>Não vendemos seus dados e não os usamos para enviar propaganda sem o seu consentimento.</p>
+
+    <h2>4. Com quem compartilhamos</h2>
+    <p>Só com os serviços necessários para o produto funcionar:</p>
+    <ul>
+      <li><strong>Hotmart:</strong> processa o pagamento e o reembolso. Os dados que você informa no checkout são tratados também pela Hotmart, conforme a política de privacidade dela.</li>
+      <li><strong>Serviço de envio de e-mail:</strong> recebe seu nome e e-mail para entregar as mensagens da plataforma.</li>
+      <li><strong>Hospedagem e banco de dados:</strong> guardam o site, a plataforma e os dados da sua conta.</li>
+      <li><strong>Google Fonts:</strong> fornece as fontes do site e, por isso, recebe o endereço IP do seu navegador.</li>
+    </ul>
+    <p>Alguns desses serviços ficam fora do Brasil. Nesses casos, escolhemos fornecedores que adotam medidas de segurança compatíveis com a LGPD.</p>
+    <p>As questões dos simulados são geradas com inteligência artificial. O serviço de IA recebe o conteúdo do edital e das matérias, <strong>nunca os seus dados pessoais</strong>.</p>
+    <p>Também podemos fornecer dados quando uma lei ou ordem judicial exigir.</p>
+
+    <h2>5. Cookies e armazenamento no navegador</h2>
+    <p>Este site não usa cookies de rastreamento nem ferramentas de análise ou publicidade. Na plataforma, guardamos no seu navegador apenas o necessário para você continuar conectado e para a tela inicial cumprimentar você pelo nome. Esses dados são apagados quando você sai da conta.</p>
+
+    <h2>6. Por quanto tempo guardamos</h2>
+    <ul>
+      <li><strong>Pedido não pago:</strong> apagado automaticamente 30 dias depois de criado.</li>
+      <li><strong>Conta e histórico de estudo:</strong> enquanto sua conta existir. Se você pedir a exclusão, apagamos esses dados.</li>
+      <li><strong>Registros de compra e reembolso:</strong> pelo prazo exigido pelas leis fiscais e de defesa do consumidor, mesmo depois da exclusão da conta.</li>
+    </ul>
+
+    <h2>7. Como protegemos</h2>
+    <p>Usamos conexão criptografada (HTTPS), senhas guardadas de forma criptografada, acesso administrativo restrito e limite de tentativas de login. Nenhum sistema é totalmente imune a falhas. Se acontecer um incidente que possa trazer risco a você, avisaremos você e a Autoridade Nacional de Proteção de Dados (ANPD), como manda a LGPD.</p>
+
+    <h2>8. Seus direitos</h2>
+    <p>Pela LGPD (art. 18), você pode pedir a qualquer momento:</p>
+    <ul>
+      <li>confirmação de que tratamos seus dados e acesso a eles;</li>
+      <li>correção de dados incompletos, errados ou desatualizados;</li>
+      <li>anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desacordo com a lei;</li>
+      <li>portabilidade dos dados para outro fornecedor;</li>
+      <li>eliminação dos dados, com as exceções previstas em lei, como os registros de compra;</li>
+      <li>informação sobre com quem compartilhamos seus dados;</li>
+      <li>revogação do consentimento, quando ele for a base do tratamento.</li>
+    </ul>
+    <p>Para isso, escreva para <a href="mailto:contato@concursoproelite.com.br">contato@concursoproelite.com.br</a> usando o e-mail da sua conta. Respondemos em até 15 dias. Se não ficar satisfeito, você também pode reclamar à ANPD em <a href="https://www.gov.br/anpd" target="_blank" rel="noopener">gov.br/anpd</a>.</p>
+
+    <h2>9. Menores de idade</h2>
+    <p>Se você tem menos de 18 anos, use a plataforma com a autorização do seu responsável legal.</p>
+
+    <h2>10. Mudanças nesta política</h2>
+    <p>Podemos atualizar esta política quando o produto mudar. A data no topo da página mostra a versão em vigor. Se a mudança for importante, avisaremos por e-mail quem tem conta.</p>
+  </main>
+
+  <footer>
+    <p>© ConcursoPro</p>
+    <nav aria-label="Institucional">
+      <a href="termos.html">Termos</a>
+      <a href="privacidade.html" aria-current="page">Privacidade</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>
