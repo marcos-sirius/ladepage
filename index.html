@@ -51,7 +51,7 @@
   /* Evita quebras feias: títulos equilibrados, parágrafos sem palavra órfã */
   h1, h2{ text-wrap:balance; }
   p, .a, .screen-cap{ text-wrap:pretty; }
-  /* Termos que não podem partir no meio (TCE-MA, R$ 67,90, 7 dias) */
+  /* Termos que não podem partir no meio (R$ 67,90, 7 dias) */
   .nw{ white-space:nowrap; }
   .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
   figure{ margin:0; }
@@ -541,7 +541,7 @@
       <div class="rows">
         <div class="row">
           <div class="q">Formato do dia da prova</div>
-          <div class="a">Mesmo número de questões e mesma distribuição de matérias do edital. No <span class="nw">TCE-MA</span>, por exemplo, são 100 questões, com 60 de conhecimentos específicos.</div>
+          <div class="a">Mesmo número de questões e mesma distribuição de matérias do edital. Se a prova tem 100 questões, 60 delas de conhecimentos específicos, o simulado também tem.</div>
         </div>
         <div class="row">
           <div class="q">Correção comentada</div>
@@ -1127,14 +1127,16 @@
       return;
     }
     // Nomes entram como texto (nunca como HTML): vêm do admin.
-    // Edital com vários cargos aparece uma vez só no resumo: "TCE-MA 2025 (3 cargos)"
-    const nomes = porEdital(lista).map(({ edital, itens }) =>
-      !edital || itens.length === 1 ? itens[0].nome : `${edital} (${itens.length} cargos)`);
+    // Só o edital ("SEAD-MA 2026"), sem os cargos: nome curto, e quem é de outro cargo do
+    // mesmo edital também se reconhece. Os cargos aparecem na janela de escolha.
+    // Concurso sem edital (cadastrado antes dos editais) aparece pelo nome.
+    const grupos = porEdital(lista).map(({ edital, itens }) => ({ nome: edital || itens[0].nome, banca: itens[0].banca }));
+    const nomes = grupos.map(g => g.nome);
     const mostrar = nomes.length > 3 ? nomes.slice(0, 3).concat(`mais ${nomes.length - 3}`) : nomes;
     disponiveisResumo.textContent = '';
     const rotulo = document.createElement('strong'); rotulo.textContent = 'Já disponíveis:';
     disponiveisResumo.append(rotulo, ' ' + new Intl.ListFormat('pt-BR', { type: 'conjunction' }).format(mostrar) + '.');
-    lista.forEach(c => {
+    grupos.forEach(c => {
       const item = document.createElement('div'); item.className = 'open-item';
       const nome = document.createElement('span'); nome.textContent = c.nome;
       const banca = document.createElement('span'); banca.className = 'banca'; banca.textContent = c.banca || '';

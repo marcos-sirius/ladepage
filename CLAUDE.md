@@ -23,12 +23,12 @@ Landing de vendas da ConcursoPro, plataforma que vende simulados de concurso pú
 ## Modelo de negócio
 
 - Pacote de 12 simulados por concurso/cargo. Pagamento único (não é mensalidade): R$ 98,90, preço de lançamento R$ 67,90 (R$ 5,66 por simulado), 40% de desconto para quem já é aluno. Garantia de 7 dias.
-- Concursos disponíveis: a lista vem da API da loja (`GET /api/loja/concursos/`, os marcados "à venda" no admin), tanto na janela de escolha quanto no "Já disponíveis" do hero e da seção `#disponiveis`. Sem API, a página mostra um texto genérico, sem citar concursos. Nomes e formatos são corrigidos no admin, nunca no código da landing. Cargos do mesmo edital (campos `edital_id`, `edital` e `cargo` da loja) aparecem agrupados: na janela, o edital com vários cargos vem FECHADO (`<details class="ck-edital">`, resumo "ÓRGÃO ANO · N cargos, BANCA") e abre com só o cargo em cada opção; fica aberto o que a pessoa abriu e o que tem o cargo marcado, mesmo quando a lista é recriada. Edital de um cargo só aparece como opção direta, com o nome completo. No resumo da página, "ÓRGÃO ANO (N cargos)". Concurso sem edital (cadastrado antes dos editais) aparece como antes, pelo nome.
+- Concursos disponíveis: a lista vem da API da loja (`GET /api/loja/concursos/`, os marcados "à venda" no admin), tanto na janela de escolha quanto no "Já disponíveis" do hero e da seção `#disponiveis`. Sem API, a página mostra um texto genérico, sem citar concursos. Nomes e formatos são corrigidos no admin, nunca no código da landing. Cargos do mesmo edital (campos `edital_id`, `edital` e `cargo` da loja) aparecem agrupados: na janela, o edital com vários cargos vem FECHADO (`<details class="ck-edital">`, resumo "ÓRGÃO ANO · N cargos, BANCA") e abre com só o cargo em cada opção; fica aberto o que a pessoa abriu e o que tem o cargo marcado, mesmo quando a lista é recriada. Edital de um cargo só aparece como opção direta, com o nome completo. No "Já disponíveis" (hero) e na lista da seção `#disponiveis`, só o edital ("ÓRGÃO ANO", com a banca na lista), sem os cargos; os cargos aparecem só na janela. Concurso sem edital (cadastrado antes dos editais) aparece como antes, pelo nome.
 - Concurso ainda não cadastrado pode ser comprado: o primeiro simulado sai em até 24h.
 - Formatos: múltipla escolha e Certo/Errado (Cebraspe).
 - Marca: ConcursoPro (@concursopro.app no Instagram, @concursopro no TikTok).
 
-Preços e prazos aparecem em vários pontos da página (hero, pacote, FAQ e metatags). Ao mudar um deles, atualize todos. O TCE-MA também aparece como exemplo fixo no item "Formato do dia da prova" e na legenda do print da prova.
+Preços e prazos aparecem em vários pontos da página (hero, pacote, FAQ e metatags). Ao mudar um deles, atualize todos. Não citar concurso específico em texto fixo da página (fica obsoleto); exemplos são genéricos.
 
 ## Fluxo de compra (decidido)
 
