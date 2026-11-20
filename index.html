@@ -356,6 +356,11 @@
   .ck-option input:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
   .ck-opt-text{ display:flex; justify-content:space-between; align-items:baseline; gap:4px 16px; flex-wrap:wrap; flex:1; min-width:0; font-size:0.95rem; }
   .ck-opt-meta{ margin-left:auto; color:var(--text-dim); font-size:0.84rem; }
+  /* Cargos do mesmo edital: título do edital e as opções embaixo, com recuo */
+  .ck-edital{ border-top:1px solid var(--line); }
+  .ck-edital-titulo{ padding:12px 4px 4px; color:var(--text-dim); font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; }
+  .ck-edital .ck-option{ border-top:none; padding-left:16px; }
+  .ck-edital .ck-option:last-child{ border-bottom:none; }
   .ck-status{ margin-top:12px; color:var(--text-dim); font-size:0.88rem; line-height:1.6; }
   .ck-status:empty{ display:none; }
   /* Carregando a lista: spinner no texto e linhas "fantasma" no lugar dos concursos */
@@ -1074,6 +1079,18 @@
       });
   }
 
+  // Agrupa os cargos do mesmo edital (campos edital_id/edital/cargo da loja), na ordem em que
+  // aparecem. Concurso sem edital (cadastrado antes dos editais) fica sozinho, como antes.
+  function porEdital(lista){
+    const grupos = [], porId = {};
+    lista.forEach(c => {
+      if(c.edital_id == null || !c.edital){ grupos.push({ edital: '', itens: [c] }); return; }
+      if(!porId[c.edital_id]){ porId[c.edital_id] = { edital: c.edital, itens: [] }; grupos.push(porId[c.edital_id]); }
+      porId[c.edital_id].itens.push(c);
+    });
+    return grupos;
+  }
+
   // "Já disponíveis" da página: mesma lista da janela. Sem lista, fica o texto genérico do HTML.
   const disponiveisResumo = document.getElementById('disponiveisResumo');
   const disponiveisLista = document.getElementById('disponiveisLista');
@@ -1089,8 +1106,10 @@
       disponiveisGenerico.hidden = false;
       return;
     }
-    // Nomes entram como texto (nunca como HTML): vêm do admin
-    const nomes = lista.map(c => c.nome);
+    // Nomes entram como texto (nunca como HTML): vêm do admin.
+    // Edital com vários cargos aparece uma vez só no resumo: "TCE-MA 2025 (3 cargos)"
+    const nomes = porEdital(lista).map(({ edital, itens }) =>
+      !edital || itens.length === 1 ? itens[0].nome : `${edital} (${itens.length} cargos)`);
     const mostrar = nomes.length > 3 ? nomes.slice(0, 3).concat(`mais ${nomes.length - 3}`) : nomes;
     disponiveisResumo.textContent = '';
     const rotulo = document.createElement('strong'); rotulo.textContent = 'Já disponíveis:';
@@ -1124,9 +1143,18 @@
     // Se o foco estava numa opção, devolve à mesma opção depois de recriar a lista
     const focado = ckList.contains(document.activeElement) ? document.activeElement.value : null;
     ckList.innerHTML = '';
-    (concursos || []).forEach(c => {
-      const formato = c.formato === 'CE' ? 'certo ou errado' : 'múltipla escolha';
-      ckList.appendChild(opcao(String(c.id), c.nome, [c.banca, formato].filter(Boolean).join(', ')));
+    porEdital(concursos || []).forEach(({ edital, itens }) => {
+      const meta = c => [c.banca, c.formato === 'CE' ? 'certo ou errado' : 'múltipla escolha'].filter(Boolean).join(', ');
+      if(!edital){ ckList.appendChild(opcao(String(itens[0].id), itens[0].nome, meta(itens[0]))); return; }
+      // Cargos do mesmo edital: um bloco com o título do edital e só o cargo em cada opção
+      const bloco = document.createElement('div');
+      bloco.className = 'ck-edital'; bloco.setAttribute('role', 'group');
+      const titulo = document.createElement('p');
+      titulo.className = 'ck-edital-titulo'; titulo.id = 'ckEdital' + itens[0].edital_id; titulo.textContent = edital;
+      bloco.setAttribute('aria-labelledby', titulo.id);
+      bloco.appendChild(titulo);
+      itens.forEach(c => bloco.appendChild(opcao(String(c.id), c.cargo || c.nome, meta(c))));
+      ckList.appendChild(bloco);
     });
     ckList.appendChild(opcao(NOVO, 'Meu concurso não está aqui', 'primeiro simulado em até 24h'));
     const volta = ckList.querySelector('input[value="' + CSS.escape(marcado) + '"]');

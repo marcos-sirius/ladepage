@@ -23,7 +23,7 @@ Landing de vendas da ConcursoPro, plataforma que vende simulados de concurso pú
 ## Modelo de negócio
 
 - Pacote de 12 simulados por concurso/cargo. Pagamento único (não é mensalidade): R$ 98,90, preço de lançamento R$ 67,90 (R$ 5,66 por simulado), 40% de desconto para quem já é aluno. Garantia de 7 dias.
-- Concursos disponíveis: a lista vem da API da loja (`GET /api/loja/concursos/`, os marcados "à venda" no admin), tanto na janela de escolha quanto no "Já disponíveis" do hero e da seção `#disponiveis`. Sem API, a página mostra um texto genérico, sem citar concursos. Nomes e formatos são corrigidos no admin, nunca no código da landing.
+- Concursos disponíveis: a lista vem da API da loja (`GET /api/loja/concursos/`, os marcados "à venda" no admin), tanto na janela de escolha quanto no "Já disponíveis" do hero e da seção `#disponiveis`. Sem API, a página mostra um texto genérico, sem citar concursos. Nomes e formatos são corrigidos no admin, nunca no código da landing. Cargos do mesmo edital (campos `edital_id`, `edital` e `cargo` da loja) aparecem agrupados: na janela, sob o título do edital (bloco `.ck-edital` com `role="group"`), mostrando só o cargo; no resumo, "ÓRGÃO ANO (N cargos)". Concurso sem edital (cadastrado antes dos editais) aparece como antes, pelo nome.
 - Concurso ainda não cadastrado pode ser comprado: o primeiro simulado sai em até 24h.
 - Formatos: múltipla escolha e Certo/Errado (Cebraspe).
 - Marca: ConcursoPro (@concursopro.app no Instagram, @concursopro no TikTok).
