@@ -1249,6 +1249,10 @@
   function atualizarNovo(){
     const e = escolha(), outro = outroCargo(e);
     ckNovo.hidden = !ehNovo(e);
+    // Com "Outro cargo" marcado, some o "Meu concurso não está aqui": evita trocar sem querer
+    // para o formulário longo. Volta assim que outra opção é marcada.
+    const naoEstaAqui = ckList.querySelector('input[value="' + NOVO + '"]');
+    if(naoEstaAqui) naoEstaAqui.closest('.ck-option').hidden = !!outro;
     // Outro cargo: o edital já está cadastrado, só falta o cargo
     Object.values(CAMPOS).filter(c => c.livre).forEach(c => { c.el.closest('.ck-field').hidden = !!outro; });
     ckNovoPar.classList.toggle('so-cargo', !!outro);
