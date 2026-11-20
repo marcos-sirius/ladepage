@@ -390,6 +390,7 @@
   .ck-novo{ margin-top:18px; padding:18px 18px 4px; border:1px solid var(--accent); border-radius:3px; }
   .ck-novo .ck-novo-note{ color:var(--text-dim); font-size:0.88rem; line-height:1.6; margin-bottom:14px; }
   .ck-pair{ display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+  .ck-pair.so-cargo{ grid-template-columns:1fr; }
   .ck-field{ margin-top:18px; }
   .ck-novo .ck-field{ margin-top:0; margin-bottom:14px; }
   .ck-field label{ display:block; }
@@ -681,8 +682,8 @@
     </fieldset>
 
     <div class="ck-novo" id="ckNovo" hidden>
-      <p class="ck-novo-note">Conte qual é o concurso. O primeiro simulado é liberado em até 24 horas depois do pagamento.</p>
-      <div class="ck-pair">
+      <p class="ck-novo-note" id="ckNovoNota">Conte qual é o concurso. O primeiro simulado é liberado em até 24 horas depois do pagamento.</p>
+      <div class="ck-pair" id="ckNovoPar">
         <div class="ck-field">
           <label for="ckNovoConcurso">Concurso</label>
           <input id="ckNovoConcurso" maxlength="200" placeholder="Ex.: TRT 2ª Região" aria-describedby="errNovoConcurso">
@@ -978,21 +979,26 @@
       regra: v => !v ? 'Informe seu e-mail. É nele que chega o acesso.'
         : !v.includes('@') ? 'Falta o @ no e-mail (ex.: nome@gmail.com).'
         : !EMAIL_RE.test(v) ? 'Confira o e-mail: parece incompleto (ex.: nome@gmail.com).' : '' },
-    novoConcurso: { el: document.getElementById('ckNovoConcurso'), err: document.getElementById('errNovoConcurso'), novo: true,
+    novoConcurso: { el: document.getElementById('ckNovoConcurso'), err: document.getElementById('errNovoConcurso'), novo: true, livre: true,
       regra: v => !v ? 'Informe o concurso.' : '' },
     novoCargo: { el: document.getElementById('ckNovoCargo'), err: document.getElementById('errNovoCargo'), novo: true,
       regra: v => !v ? 'Informe o cargo.' : '' },
-    novoBanca: { el: document.getElementById('ckNovoBanca'), err: document.getElementById('errNovoBanca'), novo: true,
+    novoBanca: { el: document.getElementById('ckNovoBanca'), err: document.getElementById('errNovoBanca'), novo: true, livre: true,
       regra: () => '' },
-    novoEdital: { el: document.getElementById('ckNovoEdital'), err: document.getElementById('errNovoEdital'), novo: true,
+    novoEdital: { el: document.getElementById('ckNovoEdital'), err: document.getElementById('errNovoEdital'), novo: true, livre: true,
       regra: v => !v ? '' : !/^https?:\/\/\S+\.\S+/i.test(v) ? 'O link precisa começar com http:// ou https://' : '' }
   };
   const errConcurso = document.getElementById('errConcurso');
 
   const valor = c => c.el.value.trim();
   const escolha = () => (form.querySelector('input[name="concurso"]:checked') || {}).value || '';
+  // "Outro cargo" de um edital já cadastrado: valor "novo:<id do edital>". Só pede o cargo;
+  // o concurso e a banca vão do próprio edital (editaisDaLista, montado em renderLista).
+  const editaisDaLista = {};
+  const outroCargo = v => v.startsWith(NOVO + ':') ? editaisDaLista[v.slice(NOVO.length + 1)] || null : null;
+  const ehNovo = v => v === NOVO || !!outroCargo(v);
   // Na ordem em que aparecem na tela (os campos do concurso novo vêm antes de nome e e-mail)
-  const ativos = () => Object.values(CAMPOS).filter(c => !c.novo || escolha() === NOVO)
+  const ativos = () => Object.values(CAMPOS).filter(c => !c.novo || escolha() === NOVO || (!c.livre && outroCargo(escolha())))
     .sort((a, b) => a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
 
   function validarCampo(c, mostrar){
@@ -1173,25 +1179,26 @@
     porEdital(concursos || []).forEach(({ edital, itens }) => {
       const meta = c => [c.banca, c.formato === 'CE' ? 'certo ou errado' : 'múltipla escolha'].filter(Boolean).join(', ');
       if(!edital){ ckList.appendChild(opcao(String(itens[0].id), itens[0].nome, meta(itens[0]))); return; }
-      // Edital de um cargo só: opção direta, com o nome completo (abrir seria um clique à toa)
-      if(itens.length === 1){ ckList.appendChild(opcao(String(itens[0].id), itens[0].nome, meta(itens[0]))); return; }
-      // Vários cargos: o edital vem fechado e abre com só o cargo em cada opção.
+      // Todo edital vem fechado e abre com só o cargo em cada opção, mais "Outro cargo deste
+      // edital" (pedido de concurso novo que aproveita o edital já cadastrado).
       // Fica aberto o que a pessoa abriu e o que tem o cargo marcado (a lista é recriada ao carregar).
       const bloco = document.createElement('details');
       bloco.className = 'ck-edital';
       const chave = String(itens[0].edital_id);
+      editaisDaLista[chave] = { edital, banca: itens[0].banca || '' };
       bloco.dataset.edital = chave;
-      bloco.open = editaisAbertos.has(chave) || itens.some(c => String(c.id) === marcado);
+      bloco.open = editaisAbertos.has(chave) || marcado === NOVO + ':' + chave || itens.some(c => String(c.id) === marcado);
       bloco.addEventListener('toggle', () => { bloco.open ? editaisAbertos.add(chave) : editaisAbertos.delete(chave); });
       const resumo = document.createElement('summary');
       const texto = document.createElement('span'); texto.className = 'ck-opt-text';
       const n = document.createElement('span'); n.textContent = edital;
       const m = document.createElement('span'); m.className = 'ck-opt-meta';
-      m.textContent = [`${itens.length} cargos`, itens[0].banca].filter(Boolean).join(', ');
+      m.textContent = [itens.length === 1 ? '1 cargo' : `${itens.length} cargos`, itens[0].banca].filter(Boolean).join(', ');
       texto.append(n, m); resumo.appendChild(texto);
       const cargos = document.createElement('div');
       cargos.setAttribute('role', 'group'); cargos.setAttribute('aria-label', 'Cargos de ' + edital);
       itens.forEach(c => cargos.appendChild(opcao(String(c.id), c.cargo || c.nome, meta(c))));
+      cargos.appendChild(opcao(NOVO + ':' + chave, 'Outro cargo deste edital', 'primeiro simulado em até 24h'));
       bloco.append(resumo, cargos);
       ckList.appendChild(bloco);
     });
@@ -1235,8 +1242,19 @@
     atualizarNovo();
   }
 
+  const ckNovoNota = document.getElementById('ckNovoNota');
+  const ckNovoPar = document.getElementById('ckNovoPar');
+  const NOTA_NOVO = ckNovoNota.textContent;
+
   function atualizarNovo(){
-    ckNovo.hidden = escolha() !== NOVO;
+    const e = escolha(), outro = outroCargo(e);
+    ckNovo.hidden = !ehNovo(e);
+    // Outro cargo: o edital já está cadastrado, só falta o cargo
+    Object.values(CAMPOS).filter(c => c.livre).forEach(c => { c.el.closest('.ck-field').hidden = !!outro; });
+    ckNovoPar.classList.toggle('so-cargo', !!outro);
+    ckNovoNota.textContent = outro
+      ? `Qual é o seu cargo no ${outro.edital}? O primeiro simulado é liberado em até 24 horas depois do pagamento.`
+      : NOTA_NOVO;
   }
 
   ckList.addEventListener('change', () => {
@@ -1330,7 +1348,12 @@
 
     const id = escolha();
     const corpo = { email: valor(CAMPOS.email).toLowerCase(), nome: valor(CAMPOS.nome) };
-    if(id === NOVO){
+    const outro = outroCargo(id);
+    if(outro){
+      corpo.novo_concurso = outro.edital;
+      corpo.novo_cargo = valor(CAMPOS.novoCargo);
+      corpo.novo_banca = outro.banca;
+    } else if(id === NOVO){
       corpo.novo_concurso = valor(CAMPOS.novoConcurso);
       corpo.novo_cargo = valor(CAMPOS.novoCargo);
       corpo.novo_banca = valor(CAMPOS.novoBanca);
