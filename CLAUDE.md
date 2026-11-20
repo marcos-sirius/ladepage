@@ -8,7 +8,7 @@ Landing de vendas da ConcursoPro, plataforma que vende simulados de concurso pú
   - Seções: hero (`.hero`, com o mostrador animado `#dialStage`), mini-simulado interativo (`#teste`), pacote e preço (`#pacote`), concursos disponíveis e como pedir um novo (`#disponiveis`), prova social (`#prova`), FAQ (`#faq`).
   - Os botões de compra (`data-checkout`) abrem a janela de escolha (`<dialog id="checkout">`). O `href` deles continua sendo o checkout da Hotmart (`pay.hotmart.com/Q106592239T?off=rkiofuef`), que vale sem JS, com Ctrl+clique e como link de reserva da janela.
 - `termos.html` e `privacidade.html`: páginas de leitura com o mesmo visual (CSS repetido inline nas duas; ao mudar uma, mude a outra). Ligadas no rodapé e no aviso da janela de escolha. O responsável pelos dados aparece só como "ConcursoPro", com o e-mail de contato. Se o produto mudar (dados coletados, fornecedores, prazo de guarda, garantia, acesso), atualize o texto e a data "Última atualização".
-- `assets/`: imagens (prints do app, depoimentos, `og-image.png` 1200x630).
+- `assets/`: imagens (prints do app, depoimentos, `og-image.png` 1200x630). Os prints do app na seção `#disponiveis` (`app-painel`, `app-priorizador`, `app-recurso`, `app-flashcards`) saem automáticos do `concursoelite`: `python manage.py dados_demo` e `scripts/prints_landing.py` (dados de demonstração genéricos, sem ano, escritos à mão, para não envelhecer). Rodar de novo quando o visual do app mudar e conferir os `width`/`height` das `<img>`.
 - O app e a API ficam no repositório `concursoelite` (Django + React). Para entender a loja e o webhook, consulte o `CLAUDE.md` de lá.
 
 ## Infraestrutura
@@ -51,8 +51,7 @@ Para testar localmente: o CORS de produção não aceita localhost, e testar con
 
 ## Pendências
 
-1. Print novo do painel (o atual mostra DATAPREV). O usuário vai deixar o print em `concursoelite/privado/`.
-2. Revisão jurídica de `termos.html` e `privacidade.html` (escritas em 06/11/2026, sem revisão de advogado).
+1. Revisão jurídica de `termos.html` e `privacidade.html` (escritas em 06/11/2026, sem revisão de advogado).
 
 Já feito (06/11/2026): janela de escolha publicada; compra e reembolso reais pela janela funcionando (o `sck` chega no webhook); site antigo do Netlify desativado; página gerada pela Hotmart despublicada.
 
