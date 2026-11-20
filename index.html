@@ -356,10 +356,22 @@
   .ck-option input:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
   .ck-opt-text{ display:flex; justify-content:space-between; align-items:baseline; gap:4px 16px; flex-wrap:wrap; flex:1; min-width:0; font-size:0.95rem; }
   .ck-opt-meta{ margin-left:auto; color:var(--text-dim); font-size:0.84rem; }
-  /* Cargos do mesmo edital: título do edital e as opções embaixo, com recuo */
+  /* Edital com vários cargos: vem fechado; ao clicar, abre com os cargos (com recuo) */
   .ck-edital{ border-top:1px solid var(--line); }
-  .ck-edital-titulo{ padding:12px 4px 4px; color:var(--text-dim); font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; }
-  .ck-edital .ck-option{ border-top:none; padding-left:16px; }
+  .ck-edital summary{
+    display:flex; align-items:center; gap:14px; padding:12px 4px; cursor:pointer;
+    list-style:none; transition:background 0.2s ease;
+  }
+  .ck-edital summary::-webkit-details-marker{ display:none; }
+  .ck-edital summary:hover{ background:rgba(255,255,255,0.03); }
+  .ck-edital summary:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .ck-edital summary::before{
+    content:'›'; width:20px; flex-shrink:0; text-align:center; color:var(--text-dim);
+    font-size:1.35rem; line-height:1; transition:transform 0.2s ease;
+  }
+  .ck-edital[open] summary::before{ transform:rotate(90deg); color:var(--accent); }
+  .ck-edital[open] summary{ color:var(--accent); }
+  .ck-edital .ck-option{ border-top:none; padding-left:38px; }
   .ck-edital .ck-option:last-child{ border-bottom:none; }
   .ck-status{ margin-top:12px; color:var(--text-dim); font-size:0.88rem; line-height:1.6; }
   .ck-status:empty{ display:none; }
@@ -1146,28 +1158,49 @@
     return label;
   }
 
+  const editaisAbertos = new Set();   // editais (vários cargos) que a pessoa abriu na janela
+
   function renderLista(){
     const marcado = escolha();
     // Se o foco estava numa opção, devolve à mesma opção depois de recriar a lista
-    const focado = ckList.contains(document.activeElement) ? document.activeElement.value : null;
+    // (uma opção, pelo valor, ou um edital fechado, pelo id do edital)
+    const ativo = ckList.contains(document.activeElement) ? document.activeElement : null;
+    const focado = ativo && ativo.tagName === 'INPUT' ? ativo.value : null;
+    const focadoEdital = ativo && ativo.tagName === 'SUMMARY' ? ativo.parentElement.dataset.edital : null;
     ckList.innerHTML = '';
     porEdital(concursos || []).forEach(({ edital, itens }) => {
       const meta = c => [c.banca, c.formato === 'CE' ? 'certo ou errado' : 'múltipla escolha'].filter(Boolean).join(', ');
       if(!edital){ ckList.appendChild(opcao(String(itens[0].id), itens[0].nome, meta(itens[0]))); return; }
-      // Cargos do mesmo edital: um bloco com o título do edital e só o cargo em cada opção
-      const bloco = document.createElement('div');
-      bloco.className = 'ck-edital'; bloco.setAttribute('role', 'group');
-      const titulo = document.createElement('p');
-      titulo.className = 'ck-edital-titulo'; titulo.id = 'ckEdital' + itens[0].edital_id; titulo.textContent = edital;
-      bloco.setAttribute('aria-labelledby', titulo.id);
-      bloco.appendChild(titulo);
-      itens.forEach(c => bloco.appendChild(opcao(String(c.id), c.cargo || c.nome, meta(c))));
+      // Edital de um cargo só: opção direta, com o nome completo (abrir seria um clique à toa)
+      if(itens.length === 1){ ckList.appendChild(opcao(String(itens[0].id), itens[0].nome, meta(itens[0]))); return; }
+      // Vários cargos: o edital vem fechado e abre com só o cargo em cada opção.
+      // Fica aberto o que a pessoa abriu e o que tem o cargo marcado (a lista é recriada ao carregar).
+      const bloco = document.createElement('details');
+      bloco.className = 'ck-edital';
+      const chave = String(itens[0].edital_id);
+      bloco.dataset.edital = chave;
+      bloco.open = editaisAbertos.has(chave) || itens.some(c => String(c.id) === marcado);
+      bloco.addEventListener('toggle', () => { bloco.open ? editaisAbertos.add(chave) : editaisAbertos.delete(chave); });
+      const resumo = document.createElement('summary');
+      const texto = document.createElement('span'); texto.className = 'ck-opt-text';
+      const n = document.createElement('span'); n.textContent = edital;
+      const m = document.createElement('span'); m.className = 'ck-opt-meta';
+      m.textContent = [`${itens.length} cargos`, itens[0].banca].filter(Boolean).join(', ');
+      texto.append(n, m); resumo.appendChild(texto);
+      const cargos = document.createElement('div');
+      cargos.setAttribute('role', 'group'); cargos.setAttribute('aria-label', 'Cargos de ' + edital);
+      itens.forEach(c => cargos.appendChild(opcao(String(c.id), c.cargo || c.nome, meta(c))));
+      bloco.append(resumo, cargos);
       ckList.appendChild(bloco);
     });
     ckList.appendChild(opcao(NOVO, 'Meu concurso não está aqui', 'primeiro simulado em até 24h'));
     const volta = ckList.querySelector('input[value="' + CSS.escape(marcado) + '"]');
     if(volta) volta.checked = true;
     if(focado !== null) ckList.querySelector('input[value="' + CSS.escape(focado) + '"]').focus();
+    if(focadoEdital !== null){
+      const s = ckList.querySelector('details[data-edital="' + CSS.escape(focadoEdital) + '"] > summary');
+      if(s) s.focus();
+    }
 
     // Enquanto carrega: linhas "fantasma" antes de "Meu concurso não está aqui",
     // para essa opção não parecer a única
@@ -1225,7 +1258,8 @@
     renderLista();
     document.documentElement.classList.add('ck-open');
     dlg.showModal();
-    const alvo = form.querySelector('input[name="concurso"]:checked') || (concursos && concursos.length ? ckList.querySelector('input') : ckTitle);
+    // 1º item da lista: um edital fechado (summary) ou uma opção solta, na ordem da tela
+    const alvo = form.querySelector('input[name="concurso"]:checked') || (concursos && concursos.length ? ckList.querySelector('summary, :scope > .ck-option input') : ckTitle);
     alvo.focus();
 
     clearTimeout(timerLista);
